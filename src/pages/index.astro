@@ -1,11 +1,21 @@
 ---
-import Welcome from '../components/Welcome.astro';
 import Layout from '../layouts/Layout.astro';
-
-// Welcome to Astro! Wondering what to do next? Check out the Astro documentation at https://docs.astro.build
-// Don't want to use any of this? Delete everything in this file, the `assets`, `components`, and `layouts` directories, and start fresh.
 ---
 
 <Layout>
-	<Welcome />
+	<main class="flex min-h-screen flex-col items-center justify-center bg-gradient-to-br from-slate-900 to-slate-800 text-white p-4">
+		<div class="text-center space-y-6">
+			<h1 class="text-6xl md:text-8xl font-extrabold tracking-tighter">
+				還元率<span class="text-yellow-400 italic">90%</span>
+			</h1>
+			<p class="text-xl md:text-2xl text-slate-300 font-medium">
+				エンジニアの価値を、正当に評価する。
+			</p>
+			<div class="pt-8">
+				<button class="bg-yellow-400 text-slate-900 px-8 py-4 rounded-full font-bold text-lg hover:bg-yellow-300 transition-colors">
+					案件一覧を見る
+				</button>
+			</div>
+		</div>
+	</main>
 </Layout>
