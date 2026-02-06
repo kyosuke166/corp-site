@@ -1,0 +1,62 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { SITE_DATA } from '../constants';
+---
+<Layout>
+  <main class="max-w-4xl mx-auto py-16 px-6">
+    <h1 class="text-3xl font-extrabold border-l-4 border-yellow-400 pl-4 mb-10">会社概要</h1>
+    
+    <div class="bg-white shadow-sm border border-slate-100 rounded-xl overflow-hidden mb-16">
+      <table class="w-full text-left border-collapse">
+        <tbody class="divide-y divide-slate-100">
+          <tr>
+            <th class="py-5 px-6 bg-slate-50 w-1/3 text-slate-600 font-bold">社名</th>
+            <td class="py-5 px-6">{SITE_DATA.companyName}</td>
+          </tr>
+          <tr>
+            <th class="py-5 px-6 bg-slate-50">設立</th>
+            <td class="py-5 px-6">{SITE_DATA.foundingDate}</td>
+          </tr>
+          <tr>
+            <th class="py-5 px-6 bg-slate-50">代表取締役</th>
+            <td class="py-5 px-6">{SITE_DATA.representative}</td>
+          </tr>
+          <tr>
+            <th class="py-5 px-6 bg-slate-50">所在地</th>
+            <td class="py-5 px-6">〒{SITE_DATA.postalCode} {SITE_DATA.address}</td>
+          </tr>
+          <tr>
+            <th class="py-5 px-6 bg-slate-50">連絡先</th>
+            <td class="py-5 px-6">
+              TEL: {SITE_DATA.tel}<br />
+              FAX: {SITE_DATA.fax}
+            </td>
+          </tr>
+          <tr>
+            <th class="py-5 px-6 bg-slate-50">事業内容</th>
+            <td class="py-5 px-6">
+              <ul class="list-disc pl-4 space-y-1">
+                <li>コンピュータシステム開発</li>
+                <li>ITコンサルティング</li>
+                <li>ネットワーク構築・運用保守</li>
+              </ul>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2 class="text-2xl font-bold mb-6">アクセス</h2>
+    <div class="w-full h-[400px] rounded-xl overflow-hidden shadow-inner border border-slate-200">
+      <iframe 
+        src={SITE_DATA.googleMapUrl} 
+        width="100%" 
+        height="100%" 
+        style="border:0;" 
+        allowfullscreen="" 
+        loading="lazy" 
+        referrerpolicy="no-referrer-when-downgrade">
+      </iframe>
+    </div>
+  </main>
+</Layout>

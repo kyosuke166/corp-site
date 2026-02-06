@@ -1,21 +1,76 @@
 ---
 import Layout from '../layouts/Layout.astro';
+import { SITE_DATA } from '../constants';
 ---
 
 <Layout>
-	<main class="flex min-h-screen flex-col items-center justify-center bg-gradient-to-br from-slate-900 to-slate-800 text-white p-4">
-		<div class="text-center space-y-6">
-			<h1 class="text-6xl md:text-8xl font-extrabold tracking-tighter">
-				還元率<span class="text-yellow-400 italic">90%</span>
-			</h1>
-			<p class="text-xl md:text-2xl text-slate-300 font-medium">
-				エンジニアの価値を、正当に評価する。
-			</p>
-			<div class="pt-8">
-				<button class="bg-yellow-400 text-slate-900 px-8 py-4 rounded-full font-bold text-lg hover:bg-yellow-300 transition-colors">
-					案件一覧を見る
-				</button>
-			</div>
-		</div>
-	</main>
+  <section class="relative bg-slate-900 py-24 md:py-32 overflow-hidden">
+    <div class="absolute inset-0 opacity-20">
+      <div class="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_50%_50%,#4f46e5,transparent_50%)]"></div>
+    </div>
+    <div class="max-w-6xl mx-auto px-6 relative z-10 text-center">
+      <h2 class="text-yellow-400 font-bold tracking-widest mb-4 animate-fade-in">HIGH REVENUE SES SERVICE</h2>
+      <h1 class="text-4xl md:text-6xl font-extrabold text-white leading-tight mb-8">
+        エンジニアに、<br class="md:hidden" /><span class="text-transparent bg-clip-text bg-gradient-to-r from-yellow-200 to-yellow-500">正当な対価を。</span>
+      </h1>
+      <p class="text-xl text-slate-300 mb-10 max-w-2xl mx-auto leading-relaxed">
+        単価非公開のブラックボックスを排除。<br />
+        還元率 <span class="text-white text-3xl font-bold italic">80% 〜 90%</span> という圧倒的な透明性を。
+      </p>
+      <div class="flex flex-col md:flex-row justify-center gap-4">
+        <a href="/contact" class="bg-yellow-500 hover:bg-yellow-400 text-slate-900 font-bold px-10 py-4 rounded-full transition-all shadow-xl hover:scale-105 text-center">
+          パートナー登録の相談をする
+        </a>
+        <a href="/system" class="bg-slate-800 hover:bg-slate-700 text-white font-bold px-10 py-4 rounded-full transition-all border border-slate-700 text-center">
+          還元率の仕組みを知る
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section class="py-20 bg-white text-slate-900">
+    <div class="max-w-6xl mx-auto px-6">
+      <div class="text-center mb-16">
+        <h2 class="text-3xl font-bold mb-4">SBTが約束する3つの価値</h2>
+        <div class="w-16 h-1 bg-yellow-400 mx-auto"></div>
+      </div>
+      
+      <div class="grid md:grid-cols-3 gap-12">
+        <div class="group">
+          <div class="w-16 h-16 bg-slate-100 rounded-2xl flex items-center justify-center mb-6 group-hover:bg-yellow-100 transition-colors">
+            <span class="text-3xl">📊</span>
+          </div>
+          <h3 class="text-xl font-bold mb-4">単価の完全公開</h3>
+          <p class="text-slate-600 leading-relaxed">案件単価を隠しません。いくらで請けて、いくら払うのか。全ての数字を公開し、対等なビジネスパートナーとしてお迎えします。</p>
+        </div>
+        <div class="group">
+          <div class="w-16 h-16 bg-slate-100 rounded-2xl flex items-center justify-center mb-6 group-hover:bg-yellow-100 transition-colors">
+            <span class="text-3xl">💻</span>
+          </div>
+          <h3 class="text-xl font-bold mb-4">案件選択の自由</h3>
+          <p class="text-slate-600 leading-relaxed">スキルアップに繋がる開発案件を厳選。リモートワーク、使用言語、単価。あなたの希望に沿ったプロジェクトへアサインします。</p>
+        </div>
+        <div class="group">
+          <div class="w-16 h-16 bg-slate-100 rounded-2xl flex items-center justify-center mb-6 group-hover:bg-yellow-100 transition-colors">
+            <span class="text-3xl">🤝</span>
+          </div>
+          <h3 class="text-xl font-bold mb-4">フリーランスを支援</h3>
+          <p class="text-slate-600 leading-relaxed">正社員に縛られない働き方を。個人事業主の方が安心して長く活動できるよう、継続的な案件提案と透明な契約フローを提供します。</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="py-20 bg-slate-100 border-t border-slate-200">
+    <div class="max-w-4xl mx-auto px-6 text-center">
+      <h2 class="text-2xl md:text-3xl font-bold mb-8">今の現場に満足していますか？</h2>
+      <p class="text-slate-600 mb-10">
+        自分の「市場価値」と「実際の収入」の差を埋めたいエンジニアの方へ。<br />
+        まずはカジュアルな相談からスタートしてください。
+      </p>
+      <a href="/contact" class="inline-block bg-slate-900 text-white font-bold px-12 py-5 rounded-lg hover:bg-slate-800 transition shadow-lg">
+        お問い合わせフォームへ
+      </a>
+    </div>
+  </section>
 </Layout>

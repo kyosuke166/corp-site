@@ -1,0 +1,37 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { SITE_DATA } from '../constants';
+---
+<Layout>
+  <main class="max-w-4xl mx-auto py-16 px-6">
+    <h1 class="text-3xl font-extrabold border-l-4 border-yellow-400 pl-4 mb-10">個人情報保護方針</h1>
+    
+    <article class="prose prose-slate max-w-none text-slate-700 leading-relaxed">
+      <p class="mb-8">
+        {SITE_DATA.companyName}（以下「当社」といいます。）は、情報サービス業として、個人情報の保護を重要な社会的責任と認識し、以下の通り個人情報保護方針を定め、役員及び従業員に周知徹底を図ります。
+      </p>
+
+      <section class="mb-8">
+        <h2 class="text-xl font-bold text-slate-900 mb-4">1. 個人情報の収集・利用・提供</h2>
+        <p>（ここに既存サイトの1項目目の文言をペースト）</p>
+      </section>
+
+      <section class="mb-8">
+        <h2 class="text-xl font-bold text-slate-900 mb-4">2. 個人情報の適正管理</h2>
+        <p>（ここに既存サイトの2項目目の文言をペースト）</p>
+      </section>
+
+      <section class="mb-8">
+        <h2 class="text-xl font-bold text-slate-900 mb-4">3. 法令・規範の遵守</h2>
+        <p>（ここに既存サイトの3項目目の文言をペースト）</p>
+      </section>
+
+      <div class="mt-16 pt-8 border-t text-right">
+        <p>{SITE_DATA.foundingDate} 制定</p>
+        <p>（改定日がある場合はここに追記）</p>
+        <p class="font-bold mt-2">{SITE_DATA.companyName}</p>
+        <p>代表取締役 {SITE_DATA.representative}</p>
+      </div>
+    </article>
+  </main>
+</Layout>

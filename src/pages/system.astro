@@ -1,0 +1,92 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { SITE_DATA } from '../constants';
+---
+
+<Layout>
+  <section class="bg-slate-50 py-16 border-b border-slate-200">
+    <div class="max-w-4xl mx-auto px-6 text-center">
+      <h1 class="text-3xl md:text-4xl font-extrabold mb-6 text-slate-900">還元率の仕組み</h1>
+      <p class="text-lg text-slate-600 leading-relaxed">
+        {SITE_DATA.companyName}では、エンジニアの市場価値を最大化するため、<br class="hidden md:inline">
+        極限までコストを削ぎ落とした「高還元・単価連動型」の報酬体系を採用しています。
+      </p>
+    </div>
+  </section>
+
+  <section class="py-20 bg-white">
+    <div class="max-w-4xl mx-auto px-6">
+      <div class="bg-slate-900 rounded-3xl p-8 md:p-12 text-white shadow-2xl relative overflow-hidden">
+        <div class="absolute top-0 right-0 p-4 opacity-10 text-6xl font-bold">LOGIC</div>
+        
+        <h2 class="text-xl font-bold mb-10 text-yellow-400 text-center uppercase tracking-widest">Reward Logic</h2>
+        
+        <div class="flex flex-col md:flex-row items-center justify-center gap-6 md:gap-10">
+          <div class="text-center">
+            <p class="text-sm text-slate-400 mb-2">案件単価</p>
+            <p class="text-3xl md:text-4xl font-mono font-bold">UNIT PRICE</p>
+          </div>
+          <div class="text-3xl text-yellow-500 font-bold">×</div>
+          <div class="text-center">
+            <p class="text-sm text-slate-400 mb-2">還元率</p>
+            <p class="text-3xl md:text-4xl font-mono font-bold text-yellow-400">80〜90%</p>
+          </div>
+          <div class="text-3xl text-yellow-500 font-bold">=</div>
+          <div class="text-center border-2 border-yellow-500 rounded-2xl p-4 px-8">
+            <p class="text-sm text-yellow-500 mb-2 font-bold">あなたの報酬</p>
+            <p class="text-3xl md:text-4xl font-mono font-bold">REWARD</p>
+          </div>
+        </div>
+        
+        <p class="mt-12 text-center text-slate-400 text-sm">
+          ※還元率は案件内容や稼働条件により変動しますが、原則として下限を80%に設定しています。
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section class="py-20 bg-slate-50">
+    <div class="max-w-4xl mx-auto px-6">
+      <h2 class="text-2xl font-bold mb-12 text-center">高還元を実現できる3つの理由</h2>
+      
+      <div class="space-y-8">
+        <div class="bg-white p-8 rounded-2xl shadow-sm border border-slate-100 flex gap-6">
+          <div class="text-3xl">1️⃣</div>
+          <div>
+            <h3 class="text-xl font-bold mb-2">営業・管理コストの最小化</h3>
+            <p class="text-slate-600">過剰な営業人員を抱えず、ITツールを活用した効率的な管理を行うことで、エンジニアに還元する原資を確保しています。</p>
+          </div>
+        </div>
+        
+        <div class="bg-white p-8 rounded-2xl shadow-sm border border-slate-100 flex gap-6">
+          <div class="text-3xl">2️⃣</div>
+          <div>
+            <h3 class="text-xl font-bold mb-2">中間マージンの排除</h3>
+            <p class="text-slate-600">商流の浅い案件を厳選。多重下請け構造から脱却し、エンドユーザーや元請けに近いポジションで参画することで、マージンを最小限に抑えています。</p>
+          </div>
+        </div>
+
+        <div class="bg-white p-8 rounded-2xl shadow-sm border border-slate-100 flex gap-6">
+          <div class="text-3xl">3️⃣</div>
+          <div>
+            <h3 class="text-xl font-bold mb-2">透明な単価開示</h3>
+            <p class="text-slate-600">エンジニアとの信頼関係が第一です。契約単価をありのままに開示し、納得感のある報酬をお支払いすることを約束します。</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="py-20 bg-white text-center border-t">
+    <div class="max-w-4xl mx-auto px-6">
+      <h2 class="text-2xl font-bold mb-6">自分の市場価値を知りたい方へ</h2>
+      <p class="text-slate-600 mb-10">
+        具体的なシミュレーションや、現在のスキルで見込める単価について詳しく知りたい方は、<br>
+        お気軽にお問い合わせください。
+      </p>
+      <a href="/contact" class="bg-slate-900 text-white font-bold px-12 py-4 rounded-lg hover:bg-slate-800 transition">
+        今のスキルで相談してみる
+      </a>
+    </div>
+  </section>
+</Layout>

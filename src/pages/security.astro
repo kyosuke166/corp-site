@@ -1,0 +1,35 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { SITE_DATA } from '../constants';
+---
+<Layout>
+  <main class="max-w-4xl mx-auto py-16 px-6">
+    <h1 class="text-3xl font-extrabold border-l-4 border-yellow-400 pl-4 mb-10">情報セキュリティ方針</h1>
+    
+    <article class="prose prose-slate max-w-none text-slate-700 leading-relaxed">
+      <p class="mb-8">
+        当社は、お客様からお預かりする情報資産、および当社の情報資産をあらゆる脅威から保護し、適切な安全管理を実現するため、以下の情報セキュリティ方針を確立し、これを推進します。
+      </p>
+
+      <section class="mb-8">
+        <h2 class="text-xl font-bold text-slate-900 mb-4">情報セキュリティ管理体制の構築</h2>
+        <p>（既存サイトの該当文言をペースト）</p>
+      </section>
+
+      <section class="mb-8">
+        <h2 class="text-xl font-bold text-slate-900 mb-4">情報資産の保護</h2>
+        <p>（既存サイトの該当文言をペースト）</p>
+      </section>
+
+      <section class="mb-12">
+        <h2 class="text-xl font-bold text-slate-900 mb-4">教育・訓練</h2>
+        <p>（既存サイトの該当文言をペースト）</p>
+      </section>
+
+      <div class="mt-16 pt-8 border-t text-right">
+        <p>{SITE_DATA.companyName}</p>
+        <p>代表取締役 {SITE_DATA.representative}</p>
+      </div>
+    </article>
+  </main>
+</Layout>

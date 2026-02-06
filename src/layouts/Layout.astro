@@ -1,27 +1,47 @@
 ---
+import { SITE_DATA } from '../constants';
 import '../styles/global.css';
 ---
-
 <!doctype html>
 <html lang="ja">
 	<head>
 		<meta charset="UTF-8" />
 		<meta name="viewport" content="width=device-width" />
 		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<link rel="icon" href="/favicon.ico" />
 		<meta name="generator" content={Astro.generator} />
-		<title>Astro Basics</title>
+		<title>{SITE_DATA.companyName} | エンジニア還元率90%のSES</title>
 	</head>
-	<body>
-		<slot />
+	<body class="flex flex-col min-h-screen font-sans text-slate-900">
+		<nav class="flex justify-between items-center p-6 bg-slate-900 text-white shadow-lg">
+			<a href="/" class="font-bold text-xl tracking-tighter">{SITE_DATA.companyName}</a>
+			<ul class="flex gap-6 text-sm font-medium">
+				<li><a href="/" class="hover:text-yellow-400 transition">HOME</a></li>
+				<li><a href="/system" class="hover:text-yellow-400 transition">還元率の仕組み</a></li>
+				<li><a href="/projects" class="hover:text-yellow-400 transition">案件一覧</a></li>
+				<li><a href="/recruit" class="hover:text-yellow-400 transition">採用情報</a></li>
+				<li><a href="/company" class="hover:text-yellow-400 transition">会社概要</a></li>
+			</ul>
+		</nav>
+
+		<main class="flex-grow">
+			<slot />
+		</main>
+
+		<footer class="bg-slate-800 py-12 text-slate-300 border-t border-slate-700">
+			<div class="max-w-6xl mx-auto px-6">
+				<div class="grid md:grid-cols-2 gap-8 mb-8">
+					<div>
+						<p class="font-bold text-white mb-2">{SITE_DATA.companyName}</p>
+						<p class="text-sm">〒{SITE_DATA.postalCode} {SITE_DATA.address}</p>
+					</div>
+					<div class="flex flex-wrap gap-x-8 gap-y-2 text-sm md:justify-end items-start">
+						<a href="/privacy" class="hover:text-white">個人情報保護方針</a>
+						<a href="/security" class="hover:text-white">情報セキュリティ方針</a>
+						<a href="/contact" class="hover:text-white font-bold text-yellow-400 underline">お問い合わせ</a>
+					</div>
+				</div>
+				<p class="text-xs text-slate-500">© 2015 {SITE_DATA.companyName} All Rights Reserved.</p>
+			</div>
+		</footer>
 	</body>
 </html>
-
-<style>
-	html,
-	body {
-		margin: 0;
-		width: 100%;
-		height: 100%;
-	}
-</style>
