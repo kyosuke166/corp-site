@@ -2,7 +2,8 @@
 import Layout from '../layouts/Layout.astro';
 import { SITE_DATA } from '../constants';
 ---
-<Layout>
+
+<Layout title="会社概要">
   <main class="max-w-4xl mx-auto py-16 px-6">
     <h1 class="text-3xl font-extrabold border-l-4 border-yellow-400 pl-4 mb-10">会社概要</h1>
     
@@ -10,31 +11,31 @@ import { SITE_DATA } from '../constants';
       <table class="w-full text-left border-collapse">
         <tbody class="divide-y divide-slate-100">
           <tr>
-            <th class="py-5 px-6 bg-slate-50 w-1/3 text-slate-600 font-bold">社名</th>
-            <td class="py-5 px-6">{SITE_DATA.companyName}</td>
+            <th class="py-4 px-6 bg-slate-50 block md:table-cell md:w-1/3 text-slate-600 font-bold">社名</th>
+            <td class="py-4 px-6 block md:table-cell">{SITE_DATA.companyName}</td>
           </tr>
           <tr>
-            <th class="py-5 px-6 bg-slate-50">設立</th>
-            <td class="py-5 px-6">{SITE_DATA.foundingDate}</td>
+            <th class="py-4 px-6 bg-slate-50 block md:table-cell text-slate-600 font-bold">設立</th>
+            <td class="py-4 px-6 block md:table-cell">{SITE_DATA.foundingDate}</td>
           </tr>
           <tr>
-            <th class="py-5 px-6 bg-slate-50">代表取締役</th>
-            <td class="py-5 px-6">{SITE_DATA.representative}</td>
+            <th class="py-4 px-6 bg-slate-50 block md:table-cell text-slate-600 font-bold">代表取締役</th>
+            <td class="py-4 px-6 block md:table-cell">{SITE_DATA.representative}</td>
           </tr>
           <tr>
-            <th class="py-5 px-6 bg-slate-50">所在地</th>
-            <td class="py-5 px-6">〒{SITE_DATA.postalCode} {SITE_DATA.address}</td>
+            <th class="py-4 px-6 bg-slate-50 block md:table-cell text-slate-600 font-bold">所在地</th>
+            <td class="py-4 px-6 block md:table-cell">〒{SITE_DATA.postalCode} {SITE_DATA.address}</td>
           </tr>
           <tr>
-            <th class="py-5 px-6 bg-slate-50">連絡先</th>
-            <td class="py-5 px-6">
-              TEL: {SITE_DATA.tel}<br />
-              FAX: {SITE_DATA.fax}
+            <th class="py-4 px-6 bg-slate-50 block md:table-cell text-slate-600 font-bold">連絡先</th>
+            <td class="py-4 px-6 block md:table-cell">
+              <span class="inline-block mr-4">TEL： {SITE_DATA.tel}</span>
+              <span class="inline-block">FAX： {SITE_DATA.fax}</span>
             </td>
           </tr>
           <tr>
-            <th class="py-5 px-6 bg-slate-50">事業内容</th>
-            <td class="py-5 px-6">
+            <th class="py-4 px-6 bg-slate-50 block md:table-cell text-slate-600 font-bold">事業内容</th>
+            <td class="py-4 px-6 block md:table-cell">
               <ul class="list-disc pl-4 space-y-1">
                 <li>コンピュータシステム開発</li>
                 <li>ITコンサルティング</li>
@@ -57,6 +58,20 @@ import { SITE_DATA } from '../constants';
         loading="lazy" 
         referrerpolicy="no-referrer-when-downgrade">
       </iframe>
+    </div>
+    
+    <div class="mt-4 text-right">
+      <a 
+        href={SITE_DATA.googleMapUrl} 
+        target="_blank" 
+        rel="noopener noreferrer" 
+        class="text-sm text-blue-600 hover:text-blue-800 hover:underline inline-flex items-center"
+      >
+        大きな地図で表示（Google Maps）
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+        </svg>
+      </a>
     </div>
   </main>
 </Layout>

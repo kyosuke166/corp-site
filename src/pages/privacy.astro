@@ -1,37 +1,95 @@
 ---
 import Layout from '../layouts/Layout.astro';
-import { SITE_DATA } from '../constants';
 ---
-<Layout>
-  <main class="max-w-4xl mx-auto py-16 px-6">
-    <h1 class="text-3xl font-extrabold border-l-4 border-yellow-400 pl-4 mb-10">個人情報保護方針</h1>
-    
-    <article class="prose prose-slate max-w-none text-slate-700 leading-relaxed">
-      <p class="mb-8">
-        {SITE_DATA.companyName}（以下「当社」といいます。）は、情報サービス業として、個人情報の保護を重要な社会的責任と認識し、以下の通り個人情報保護方針を定め、役員及び従業員に周知徹底を図ります。
+
+<Layout title="個人情報保護方針">
+  <article class="content-container">
+    <header class="page-header">
+      <h1>個人情報保護方針</h1>
+    </header>
+
+    <div class="policy-intro">
+      <p>
+        株式会社ＳＢＴは、当社が取得した個人情報の取扱いに関し、個人情報の保護に関する法律、個人情報保護に関するガイドライン等の指針、その他個人情報保護に関する関係法令を遵守し、お客様の大切な個人情報の保護に万全を尽くします。
       </p>
+    </div>
 
-      <section class="mb-8">
-        <h2 class="text-xl font-bold text-slate-900 mb-4">1. 個人情報の収集・利用・提供</h2>
-        <p>（ここに既存サイトの1項目目の文言をペースト）</p>
-      </section>
+    <section class="policy-section">
+      <p>
+        ■個人情報は当社のサービス提供において正当な事業遂行上並びに従業者の雇用、人事管理上必要な範囲に限定して、取得・利用及び提供をし、特定された利用目的の達成に必要な範囲を超えた個人情報の取扱い（目的外利用）は致しません。 また、目的外利用を行わないための措置を講じます。お客さまの個人情報については、上記利用目的を達成するため、業務委託先又は提携先に預託する場合がございます。その場合は、個人情報の保護が十分に図られている企業を選定し、個人情報保護の契約を締結する等必要かつ適切な処置を実施いたします。
+      </p>
+    </section>
 
-      <section class="mb-8">
-        <h2 class="text-xl font-bold text-slate-900 mb-4">2. 個人情報の適正管理</h2>
-        <p>（ここに既存サイトの2項目目の文言をペースト）</p>
-      </section>
+    <section class="policy-section">
+      <p>
+        ■当社は、個人情報の保護に関して、組織的、物理的、人的、技術的に適切な対策を実施し、当社の取り扱う個人情報の漏えい、滅失又はき損の防止その他の個人情報の安全管理のために必要かつ適切な措置を講ずるものとします。
+      </p>
+    </section>
 
-      <section class="mb-8">
-        <h2 class="text-xl font-bold text-slate-900 mb-4">3. 法令・規範の遵守</h2>
-        <p>（ここに既存サイトの3項目目の文言をペースト）</p>
-      </section>
+    <section class="policy-section">
+      <p>
+        ■個人情報の漏えい、滅失、毀損などのリスクに対しては、合理的な安全対策を講じて防止すべく事業の実情に合致した経営資源を注入し個人情報セキュリティ体制を継続的に向上させます。また、万一の際には速やかに是正措置を講じます。
+      </p>
+    </section>
 
-      <div class="mt-16 pt-8 border-t text-right">
-        <p>{SITE_DATA.foundingDate} 制定</p>
-        <p>（改定日がある場合はここに追記）</p>
-        <p class="font-bold mt-2">{SITE_DATA.companyName}</p>
-        <p>代表取締役 {SITE_DATA.representative}</p>
-      </div>
-    </article>
-  </main>
+    <section class="policy-section">
+      <p>
+        ■個人情報取扱いに関する苦情及び相談に対しては、迅速かつ誠実に、適切な対応をさせていただきます。
+      </p>
+    </section>
+
+    <section class="policy-section">
+      <p>
+        ■個人情報保護マネジメントシステムは、当社を取り巻く環境の変化を踏まえ、適時・適切に見直してその改善を継続的に推進します。
+      </p>
+    </section>
+  </article>
 </Layout>
+
+<style>
+  .content-container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 60px 20px;
+    line-height: 1.8;
+    color: #333;
+  }
+
+  .page-header {
+    border-bottom: 2px solid #004a99;
+    margin-bottom: 40px;
+    padding-bottom: 10px;
+  }
+
+  .page-header h1 {
+    margin: 0;
+    font-size: 2rem;
+    color: #004a99;
+  }
+
+  .policy-intro {
+    background-color: #f8f9fa;
+    padding: 30px;
+    border-radius: 8px;
+    margin-bottom: 40px;
+    font-weight: 500;
+  }
+
+  .policy-section {
+    margin-bottom: 30px;
+    padding-left: 5px;
+  }
+
+  .policy-section p {
+    margin: 0;
+  }
+
+  @media (max-width: 600px) {
+    .content-container {
+      padding: 40px 15px;
+    }
+    .page-header h1 {
+      font-size: 1.5rem;
+    }
+  }
+</style>

@@ -1,35 +1,101 @@
 ---
 import Layout from '../layouts/Layout.astro';
-import { SITE_DATA } from '../constants';
 ---
-<Layout>
-  <main class="max-w-4xl mx-auto py-16 px-6">
-    <h1 class="text-3xl font-extrabold border-l-4 border-yellow-400 pl-4 mb-10">情報セキュリティ方針</h1>
-    
-    <article class="prose prose-slate max-w-none text-slate-700 leading-relaxed">
-      <p class="mb-8">
-        当社は、お客様からお預かりする情報資産、および当社の情報資産をあらゆる脅威から保護し、適切な安全管理を実現するため、以下の情報セキュリティ方針を確立し、これを推進します。
+
+<Layout title="情報セキュリティ方針">
+  <article class="content-container">
+    <header class="page-header">
+      <h1>情報セキュリティ方針</h1>
+    </header>
+
+    <div class="policy-intro">
+      <p>
+        株式会社ＳＢＴは、常に安心・安全なサービスを提供し続け、お客様に信頼される企業でありつづけたいと考えております。昨今、ますます企業活動のグローバル化が求められるなか、サービスを提供するうえで、情報セキュリティレベルの維持・向上は極めて重要であると考えています。そのため、当社は情報及び情報システムのセキュリティ確保が自社の存立に関わる経営課題と認識し、確実な情報セキュリティ管理体制を維持していくことを努めてまいります。
       </p>
+    </div>
 
-      <section class="mb-8">
-        <h2 class="text-xl font-bold text-slate-900 mb-4">情報セキュリティ管理体制の構築</h2>
-        <p>（既存サイトの該当文言をペースト）</p>
-      </section>
+    <section class="policy-section">
+      <h2>■情報セキュリティマネジメントシステムの構築</h2>
+      <p>
+        当社は、IT情報化社会における情報セキュリティの重要性を深く認識し、安心・安全 で便利な情報通信ネットワーク・システムの構築、及び情報サービスの提供に努めます。当社は事業活動にかかわる全ての情報を保護の対象とし、常に最適なセキュリティ対策を講じるものとします。
+      </p>
+    </section>
 
-      <section class="mb-8">
-        <h2 class="text-xl font-bold text-slate-900 mb-4">情報資産の保護</h2>
-        <p>（既存サイトの該当文言をペースト）</p>
-      </section>
+    <section class="policy-section">
+      <h2>■リスクアセスメントの実施</h2>
+      <p>
+        当社はリスクに応じた適切な情報セキュリティ対策を講じるため、体系的なリスク分析を行います。情報資産の守秘ランクを定め、脅威と脆弱性の評価を行います。また、リスク評価の結果を踏まえ、対策を立案し、継続的に改善していきます。
+      </p>
+    </section>
 
-      <section class="mb-12">
-        <h2 class="text-xl font-bold text-slate-900 mb-4">教育・訓練</h2>
-        <p>（既存サイトの該当文言をペースト）</p>
-      </section>
+    <section class="policy-section">
+      <h2>■従業員への啓蒙・教育・訓練</h2>
+      <p>
+        当社は、すべての従業員に対し、情報を保護することは、当社の事業活動の基本であり、企業としての重要な社会的責任であることを十分に啓蒙し、すべての従業員に対して適切な教員・訓練を行います。
+      </p>
+    </section>
 
-      <div class="mt-16 pt-8 border-t text-right">
-        <p>{SITE_DATA.companyName}</p>
-        <p>代表取締役 {SITE_DATA.representative}</p>
-      </div>
-    </article>
-  </main>
+    <section class="policy-section">
+      <h2>■情報セキュリティ事件・事故への対策</h2>
+      <p>
+        当社は、情報セキュリティ事件・事故に対する防止策の手順を確立し、その運用を従業員に徹底させることで、情報セキュリティ事件・事故の発生を未然に防ぎます。
+      </p>
+    </section>
+  </article>
 </Layout>
+
+<style>
+  .content-container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 60px 20px;
+    line-height: 1.8;
+    color: #333;
+  }
+
+  .page-header {
+    border-bottom: 2px solid #004a99;
+    margin-bottom: 40px;
+    padding-bottom: 10px;
+  }
+
+  .page-header h1 {
+    margin: 0;
+    font-size: 2rem;
+    color: #004a99;
+  }
+
+  .policy-intro {
+    background-color: #f8f9fa;
+    padding: 30px;
+    border-radius: 8px;
+    margin-bottom: 40px;
+    font-weight: 500;
+  }
+
+  .policy-section {
+    margin-bottom: 40px;
+  }
+
+  .policy-section h2 {
+    font-size: 1.25rem;
+    color: #004a99;
+    margin-bottom: 15px;
+    border-left: 4px solid #004a99;
+    padding-left: 15px;
+  }
+
+  .policy-section p {
+    margin: 0;
+    padding-left: 19px; /* 縦棒の分だけずらす */
+  }
+
+  @media (max-width: 600px) {
+    .content-container {
+      padding: 40px 15px;
+    }
+    .page-header h1 {
+      font-size: 1.5rem;
+    }
+  }
+</style>

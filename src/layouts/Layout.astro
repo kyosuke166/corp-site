@@ -1,47 +1,116 @@
 ---
 import { SITE_DATA } from '../constants';
-import '../styles/global.css';
+
+interface Props {
+	title?: string;
+}
+
+const { title } = Astro.props;
+const displayTitle = title ? `${title} | ${SITE_DATA.companyName}` : SITE_DATA.companyName;
 ---
+
 <!doctype html>
 <html lang="ja">
 	<head>
 		<meta charset="UTF-8" />
-		<meta name="viewport" content="width=device-width" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<meta name="generator" content={Astro.generator} />
-		<title>{SITE_DATA.companyName} | エンジニア還元率90%のSES</title>
+		<title>{displayTitle}</title>
 	</head>
-	<body class="flex flex-col min-h-screen font-sans text-slate-900">
-		<nav class="flex justify-between items-center p-6 bg-slate-900 text-white shadow-lg">
-			<a href="/" class="font-bold text-xl tracking-tighter">{SITE_DATA.companyName}</a>
-			<ul class="flex gap-6 text-sm font-medium">
-				<li><a href="/" class="hover:text-yellow-400 transition">HOME</a></li>
-				<li><a href="/system" class="hover:text-yellow-400 transition">還元率の仕組み</a></li>
-				<li><a href="/projects" class="hover:text-yellow-400 transition">案件一覧</a></li>
-				<li><a href="/recruit" class="hover:text-yellow-400 transition">採用情報</a></li>
-				<li><a href="/company" class="hover:text-yellow-400 transition">会社概要</a></li>
-			</ul>
-		</nav>
+	<body class="bg-slate-50 font-sans text-slate-900 antialiased m-0 p-0">
+		<header class="sticky top-0 z-50 w-full bg-white/80 backdrop-blur-md border-b border-slate-200">
+			<div class="max-w-6xl mx-auto px-4 md:px-6 h-16 md:h-20 flex items-center justify-between">
+				
+				<a href="/" class="hover:opacity-80 transition-opacity flex-shrink-0 relative z-[60]">
+				<img src="/header_logo.png" alt={SITE_DATA.companyName} class="h-10 md:h-20 w-auto object-contain" />
+				</a>
 
-		<main class="flex-grow">
-			<slot />
-		</main>
+				<nav class="hidden md:flex items-center gap-8 text-sm font-bold">
+				<a href="/company" class="text-slate-600 hover:text-yellow-600 no-underline transition">会社概要</a>
+				<a href="/projects" class="text-slate-600 hover:text-yellow-600 no-underline transition">案件一覧</a>
+				<a href="/contact" class="bg-slate-900 text-white px-6 py-2.5 rounded-full no-underline hover:bg-slate-800 transition">お問い合わせ</a>
+				</nav>
 
-		<footer class="bg-slate-800 py-12 text-slate-300 border-t border-slate-700">
+				<button id="menu-btn" class="md:hidden flex flex-col justify-center items-center w-10 h-10 gap-1.5 relative z-[60] outline-none" aria-label="メニュー">
+				<span class="w-6 h-0.5 bg-slate-900 transition-all duration-300" id="line1"></span>
+				<span class="w-6 h-0.5 bg-slate-900 transition-all duration-300" id="line2"></span>
+				<span class="w-6 h-0.5 bg-slate-900 transition-all duration-300" id="line3"></span>
+				</button>
+
+				<div id="mobile-menu" class="fixed inset-0 bg-white z-[50] flex flex-col items-center justify-center gap-8 translate-x-full transition-transform duration-300 md:hidden">
+				<nav class="flex flex-col items-center gap-8 text-xl font-bold">
+					<a href="/" class="mobile-link text-slate-900 no-underline">トップページ</a>
+					<a href="/company" class="mobile-link text-slate-900 no-underline">会社概要</a>
+					<a href="/projects" class="mobile-link text-slate-900 no-underline">案件一覧</a>
+					<a href="/contact" class="mobile-link bg-slate-900 text-white px-10 py-4 rounded-full no-underline shadow-lg">お問い合わせ</a>
+				</nav>
+				</div>
+			</div>
+		</header>
+
+		<script>
+		const menuBtn = document.getElementById('menu-btn');
+		const mobileMenu = document.getElementById('mobile-menu');
+		const line1 = document.getElementById('line1');
+		const line2 = document.getElementById('line2');
+		const line3 = document.getElementById('line3');
+		const mobileLinks = document.querySelectorAll('.mobile-link');
+
+		let isOpen = false;
+
+		function toggleMenu() {
+			isOpen = !isOpen;
+			if (isOpen) {
+			// メニューを開く
+			mobileMenu?.classList.remove('translate-x-full');
+			// 三本線を「×」に変形
+			line1?.classList.add('rotate-45', 'translate-y-[8px]');
+			line2?.classList.add('opacity-0');
+			line3?.classList.add('-rotate-45', '-translate-y-[8px]');
+			document.body.style.overflow = 'hidden'; // 背後をスクロールさせない
+			} else {
+			// メニューを閉じる
+			mobileMenu?.classList.add('translate-x-full');
+			line1?.classList.remove('rotate-45', 'translate-y-[8px]');
+			line2?.classList.remove('opacity-0');
+			line3?.classList.remove('-rotate-45', '-translate-y-[8px]');
+			document.body.style.overflow = '';
+			}
+		}
+
+		menuBtn?.addEventListener('click', toggleMenu);
+
+		// リンクをクリックしたらメニューを閉じる
+		mobileLinks.forEach(link => {
+			link.addEventListener('click', () => {
+			if (isOpen) toggleMenu();
+			});
+		});
+		</script>
+
+		<slot />
+
+		<footer class="bg-slate-800 py-12 text-slate-300 border-t border-slate-700 mt-20">
 			<div class="max-w-6xl mx-auto px-6">
-				<div class="grid md:grid-cols-2 gap-8 mb-8">
+				<div class="grid md:grid-cols-2 gap-8 mb-8 text-left">
 					<div>
 						<p class="font-bold text-white mb-2">{SITE_DATA.companyName}</p>
 						<p class="text-sm">〒{SITE_DATA.postalCode} {SITE_DATA.address}</p>
 					</div>
 					<div class="flex flex-wrap gap-x-8 gap-y-2 text-sm md:justify-end items-start">
-						<a href="/privacy" class="hover:text-white">個人情報保護方針</a>
-						<a href="/security" class="hover:text-white">情報セキュリティ方針</a>
-						<a href="/contact" class="hover:text-white font-bold text-yellow-400 underline">お問い合わせ</a>
+						<a href="/privacy" target="_blank" class="hover:text-white no-underline text-slate-300">個人情報保護方針</a>
+						<a href="/security" target="_blank" class="hover:text-white no-underline text-slate-300">情報セキュリティ方針</a>
+						<a href="/contact" class="hover:text-white no-underline text-slate-300">お問い合わせ</a>
 					</div>
 				</div>
-				<p class="text-xs text-slate-500">© 2015 {SITE_DATA.companyName} All Rights Reserved.</p>
+				<p class="text-xs text-slate-500 text-center">© 2015 {SITE_DATA.companyName} All Rights Reserved.</p>
 			</div>
 		</footer>
 	</body>
 </html>
+
+<style is:global>
+	/* 基本の余白リセット（保険） */
+	body, h1, h2, p { margin: 0; padding: 0; }
+	html { scroll-behavior: smooth; }
+</style>

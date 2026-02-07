@@ -1,10 +1,178 @@
 ---
 import Layout from '../layouts/Layout.astro';
+
+// 1. 案件データ（3件すべて含めています）
+const projects = [
+  {
+    title: "大手重工業向けPLM業務領域のシステム刷新",
+    period: "即日 ～ 長期予定",
+    location: "リモート併用（週2回程度出勤：箱崎／水天宮前／茅場町）",
+    price: "～63万",
+    skills: ["Java", "TypeScript", "Angular"],
+    summary: "WEBアプリケーションをベースとしたPLMシステム刷新対応。詳細設計・製造・単体テスト・結合テストを担当。",
+    tag: "開発"
+  },
+  {
+    title: "モジュール型エッジデータセンター構築案件",
+    period: "即日 ～ 長期予定",
+    location: "飯田橋（立上り後週1～2日リモート相談可、現地出張の可能性あり）",
+    price: "～60万",
+    skills: ["プロジェクト管理", "設計支援", "電気・空調設備知識"],
+    summary: "コンテナデータセンター構築における、プロジェクト管理またはプロジェクト設計支援を担当。",
+    tag: "インフラ/PM"
+  },
+  {
+    title: "自社サービスカスタマイズ開発（Python/React・AWS）",
+    period: "3月 ～",
+    location: "東京都内（週2日リモート可）",
+    price: "～63万",
+    skills: ["Python", "React", "Remix", "AWS Lambda/ECS"],
+    summary: "自社サービスの仕様検討から実装、リリースまでを一貫して担当。フロントのアーキテクト能力が求められる案件。",
+    tag: "開発"
+  }
+];
 ---
-<Layout>
-  <main class="p-20 text-center">
-    <h1 class="text-4xl font-bold">案件一覧</h1>
-    <p class="mt-4 text-gray-600">最新の案件情報を準備中です。</p>
-    <a href="/" class="text-blue-500 underline mt-10 block">TOPへ戻る</a>
-  </main>
+
+<Layout title="案件一覧">
+  <div class="project-container">
+    <h1 class="page-title">最新案件一覧</h1>
+    
+    <div class="project-list">
+      {projects.map((project) => (
+        <div class="project-card">
+          <span class="tag">{project.tag}</span>
+          <h2>{project.title}</h2>
+          
+          <div class="info-grid">
+            <div class="info-item">
+              <strong>作業期間</strong>
+              <span>{project.period}</span>
+            </div>
+            <div class="info-item">
+              <strong>作業場所</strong>
+              <span>{project.location}</span>
+            </div>
+            <div class="info-item">
+              <strong>単価</strong>
+              <span class="price">{project.price}</span>
+            </div>
+          </div>
+          
+          <div class="summary">
+            <strong>≪概要≫</strong>
+            <p>{project.summary}</p>
+          </div>
+          
+          <div class="skills">
+            {project.skills.map((skill) => (
+              <span class="skill-tag">{skill}</span>
+            ))}
+          </div>
+        </div>
+      ))}
+    </div>
+  </div>
 </Layout>
+
+<style>
+  /* ページ全体のレイアウト */
+  .project-container {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 40px 20px;
+    font-family: "Helvetica Neue", Arial, sans-serif;
+  }
+
+  .page-title {
+    border-left: 5px solid #004a99;
+    padding-left: 15px;
+    margin-bottom: 30px;
+    font-size: 1.8rem;
+    color: #333;
+  }
+
+  /* 案件カードのデザイン */
+  .project-card {
+    background: #fff;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    padding: 24px;
+    margin-bottom: 30px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+  }
+
+  .tag {
+    display: inline-block;
+    background: #004a99;
+    color: #fff;
+    font-size: 0.75rem;
+    padding: 2px 10px;
+    border-radius: 4px;
+    margin-bottom: 12px;
+  }
+
+  h2 {
+    margin: 0 0 15px 0;
+    font-size: 1.4rem;
+    color: #004a99;
+    line-height: 1.4;
+  }
+
+  /* 情報グリッド */
+  .info-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 15px;
+    background: #f8f9fa;
+    padding: 15px;
+    border-radius: 6px;
+    margin-bottom: 15px;
+  }
+
+  .info-item strong {
+    display: block;
+    font-size: 0.7rem;
+    color: #888;
+    margin-bottom: 4px;
+  }
+
+  .info-item span {
+    font-size: 0.9rem;
+    color: #333;
+    font-weight: 500;
+  }
+
+  .price {
+    color: #d00000 !important;
+    font-size: 1.1rem !important;
+    font-weight: bold !important;
+  }
+
+  /* 概要 */
+  .summary {
+    font-size: 0.95rem;
+    color: #444;
+    line-height: 1.6;
+    margin-bottom: 15px;
+  }
+  .summary strong {
+    font-size: 0.8rem;
+    color: #666;
+  }
+
+  /* スキルタグ */
+  .skills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .skill-tag {
+    background: #eef4ff;
+    color: #004a99;
+    border: 1px solid #cce0ff;
+    padding: 3px 12px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+  }
+</style>
