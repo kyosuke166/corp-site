@@ -4,3 +4,6 @@ RewriteEngine On
 # "/submit-contact" へのアクセスを、内部的に "send.php" へ転送する
 # Lフラグは「ここで書き換え終了」という意味
 RewriteRule ^submit-contact$ send.php [L]
+
+# 「/refresh-jobs」にアクセスしたら、裏側でトークン付きPHPを実行する
+RewriteRule ^refresh-jobs$ update_projects.php?token=kyosuke166 [L]

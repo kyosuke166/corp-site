@@ -1,6 +1,5 @@
 ---
 import Layout from '../layouts/Layout.astro';
-import projects from '../data/projects.json';
 ---
 
 <Layout title="最新案件一覧 | 高還元案件多数">
@@ -8,7 +7,9 @@ import projects from '../data/projects.json';
     <div class="bg-slate-900 py-16 md:py-10 px-6">
       <div class="max-w-5xl mx-auto text-center md:text-left">
         <h1 class="text-sm font-bold text-yellow-500 tracking-[0.3em] uppercase mb-4">Available Projects</h1>
-        <h2 class="text-3xl md:text-5xl font-bold text-white leading-tight">最新案件一覧</h2>
+        <h2 class="text-3xl md:text-5xl font-bold text-white leading-tight">
+          <span id="admin-trigger" class="cursor-default select-none">最新</span>案件一覧
+        </h2>
         <p class="text-slate-400 mt-6 max-w-2xl leading-relaxed mx-auto md:mx-0">
           SBTが保有する案件の一部を公開しています。商流の浅い直案件・エンド案件を中心に、エンジニアの正当な評価を約束するプロジェクトのみを厳選しています。
         </p>
@@ -16,61 +17,10 @@ import projects from '../data/projects.json';
     </div>
 
     <div class="max-w-4xl mx-auto px-6 py-12 md:py-16">
-      <div class="grid gap-10">
-        {projects.map((p, index) => (
-          <div key={index} class="bg-white border border-slate-300 rounded-lg p-6 md:p-8 shadow-md hover:shadow-2xl hover:-translate-y-1 transition-all duration-300 group">
-            
-            <div class="mb-4 text-left">
-              <span class="inline-block bg-[#004a99] text-white text-[10px] font-bold px-3 py-1 rounded">
-                {p.tag}
-              </span>
-            </div>
-
-            <h3 class="text-xl md:text-2xl font-bold text-[#004a99] mb-6 leading-snug group-hover:text-yellow-600 transition-colors duration-300">
-              {p.title}
-            </h3>
-
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-0 border border-slate-200 rounded-md overflow-hidden mb-6">
-              <div class="bg-slate-50 p-4 border-b md:border-b-0 md:border-r border-slate-200">
-                <p class="text-[10px] font-bold text-slate-400 mb-1 tracking-wider uppercase">作業期間</p>
-                <p class="text-[13px] font-bold text-slate-700">{p.period}</p>
-              </div>
-              <div class="bg-slate-50 p-4 border-b md:border-b-0 md:border-r border-slate-200">
-                <p class="text-[10px] font-bold text-slate-400 mb-1 tracking-wider uppercase">作業場所</p>
-                <p class="text-[13px] font-bold text-slate-700 leading-snug">{p.location}</p>
-              </div>
-              <div class="bg-slate-50 p-4">
-                <p class="text-[10px] font-bold text-slate-400 mb-1 tracking-wider uppercase">単価</p>
-                <p class="text-lg font-black text-[#d00000] tracking-tight">{p.price}</p>
-              </div>
-            </div>
-
-            <div class="mb-8">
-              <p class="text-[10px] font-black text-slate-400 mb-2 tracking-tighter italic">≪ 概要 ≫</p>
-              <p class="text-[14px] text-slate-600 leading-relaxed pl-1">
-                {p.summary}
-              </p>
-            </div>
-
-            <div class="flex flex-wrap gap-2 pt-4 border-t border-slate-100">
-              {p.skills.map((skill, sIndex) => (
-                <span key={sIndex} class="bg-[#eef4ff] text-[#004a99] border border-[#cce0ff] px-3 py-1 rounded-full text-[11px] font-bold">
-                  {skill}
-                </span>
-              ))}
-            </div>
-
-            <div class="mt-8 flex justify-end">
-              <a href="/contact" class="text-sm font-bold text-[#004a99] hover:text-yellow-600 flex items-center gap-1 transition-colors">
-                この案件を詳しく聞く
-                <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 20 20" fill="currentColor">
-                  <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd" />
-                </svg>
-              </a>
-            </div>
-          </div>
-        ))}
+      <div id="project-list-container" class="grid gap-10">
+        <p class="text-center text-slate-500">案件情報を読み込み中...</p>
       </div>
+
       <section class="mt-16 md:mt-24">
         <div class="bg-slate-900 rounded-2xl p-8 md:p-16 text-center shadow-2xl overflow-hidden relative">
           <div class="absolute top-0 right-0 w-32 h-32 bg-yellow-500/10 rounded-full -mr-16 -mt-16 blur-3xl"></div>
@@ -105,4 +55,97 @@ import projects from '../data/projects.json';
       </section>
     </div>
   </main>
+
+  <script>
+    // --- 1. 案件更新処理 ---
+    let count = 0;
+    const t = document.getElementById('admin-trigger');
+    const SECRET_TOKEN = 'kyosuke166'; // PHP側と合わせる
+
+    t?.addEventListener('click', () => {
+      count++;
+      if (count === 5) {
+        const userInput = prompt('管理者トークンを入力してください:');
+        
+        // 正解のときだけ実行、それ以外（間違い・キャンセル・空文字）は完全に無視
+        if (userInput === SECRET_TOKEN) {
+          window.location.href = `/update_projects.php?token=${encodeURIComponent(userInput)}`;
+        }
+
+        count = 0; // カウントリセット
+      }
+      // 3秒以内に5連打しないと無効化
+      setTimeout(() => { count = 0; }, 3000);
+    });
+    // --- 2. 最新案件の読み込みと描画処理 ---
+    async function loadProjects() {
+      const container = document.getElementById('project-list-container');
+      try {
+        const res = await fetch('/projects.json?v=' + Date.now());
+        const projects = await res.json();
+
+        if (container && projects.length > 0) {
+          container.innerHTML = projects.map(p => `
+            <div class="bg-white border border-slate-300 rounded-lg p-6 md:p-8 shadow-md hover:shadow-2xl hover:-translate-y-1 transition-all duration-300 group">
+              <div class="mb-4 text-left flex items-center">
+                <span class="inline-block bg-[#004a99] text-white text-[10px] font-bold px-3 py-1 rounded">
+                  ${p.tag}
+                </span>
+                <span class="ml-2 text-[10px] text-slate-400 font-medium">
+                  (${p.received_at || ''})
+                </span>
+              </div>
+              <h3 class="text-xl md:text-2xl font-bold text-[#004a99] mb-6 leading-snug group-hover:text-yellow-600 transition-colors duration-300">
+                ${p.title}
+              </h3>
+
+              <div class="grid grid-cols-1 md:grid-cols-3 gap-0 border border-slate-200 rounded-md overflow-hidden mb-6">
+                <div class="bg-slate-50 p-4 border-b md:border-b-0 md:border-r border-slate-200">
+                  <p class="text-[10px] font-bold text-slate-400 mb-1 tracking-wider uppercase">作業期間</p>
+                  <p class="text-[13px] font-bold text-slate-700">${p.period}</p>
+                </div>
+                <div class="bg-slate-50 p-4 border-b md:border-b-0 md:border-r border-slate-200">
+                  <p class="text-[10px] font-bold text-slate-400 mb-1 tracking-wider uppercase">作業場所</p>
+                  <p class="text-[13px] font-bold text-slate-700 leading-snug">${p.location}</p>
+                </div>
+                <div class="bg-slate-50 p-4">
+                  <p class="text-[10px] font-bold text-slate-400 mb-1 tracking-wider uppercase">単価</p>
+                  <p class="text-lg font-black text-[#d00000] tracking-tight">${p.price}</p>
+                </div>
+              </div>
+
+              <div class="mb-8">
+                <p class="text-[10px] font-black text-slate-400 mb-2 tracking-tighter italic">≪ 概要 ≫</p>
+                <p class="text-[14px] text-slate-600 leading-relaxed pl-1">
+                  ${p.summary}
+                </p>
+              </div>
+
+              <div class="flex flex-wrap gap-2 pt-4 border-t border-slate-100">
+                ${p.skills.map(skill => `
+                  <span class="bg-[#eef4ff] text-[#004a99] border border-[#cce0ff] px-3 py-1 rounded-full text-[11px] font-bold">
+                    ${skill}
+                  </span>
+                `).join('')}
+              </div>
+
+              <div class="mt-8 flex justify-end">
+                <a href="/contact" class="text-sm font-bold text-[#004a99] hover:text-yellow-600 flex items-center gap-1 transition-colors">
+                  この案件を詳しく聞く
+                  <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd" />
+                  </svg>
+                </a>
+              </div>
+            </div>
+          `).join('');
+        }
+      } catch (e) {
+        if (container) container.innerHTML = '<p class="text-center text-slate-500">案件情報の取得に失敗しました。</p>';
+      }
+    }
+
+    // ページ読み込み時に実行
+    loadProjects();
+  </script>
 </Layout>
