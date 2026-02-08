@@ -7,104 +7,148 @@ import Layout from '../layouts/Layout.astro';
     <div class="bg-slate-900 py-16 md:py-12 px-6">
       <div class="max-w-5xl mx-auto text-center md:text-left">
         <h1 class="text-sm font-bold text-yellow-500 tracking-[0.3em] uppercase mb-4">Contact</h1>
-        <h2 class="text-3xl md:text-5xl font-bold text-white leading-tight">お問い合わせ</h2>
+        <h2 id="page-title" class="text-3xl md:text-5xl font-bold text-white leading-tight">お問い合わせ</h2>
       </div>
     </div>
 
     <div class="max-w-4xl mx-auto px-6 py-12 md:py-16">
       <div class="bg-white border border-slate-300 rounded-lg p-6 md:p-12 shadow-md">
         
-        <form action="/submit-contact" method="POST" class="space-y-10">
+        <form id="contact-form" action="/submit-contact" method="POST" class="space-y-10">
           
-          <section>
-            <label class="block text-xs font-black text-slate-500 mb-2 uppercase tracking-widest">お問い合わせ内容 <span class="text-red-500">※</span></label>
-            <select name="inquiry_type" required class="w-full border border-slate-300 rounded-lg p-4 bg-slate-50 focus:bg-white focus:ring-2 focus:ring-yellow-500 outline-none appearance-none font-bold text-slate-700 cursor-pointer">
-              <option value="">選択してください</option>
-              <option value="SES協業について">SES協業について</option>
-              <option value="フリーランス登録について">フリーランス登録について</option>
-              <option value="採用について">採用について</option>
-              <option value="その他">その他</option>
-            </select>
-          </section>
+          <div id="input-fields" class="space-y-10">
+            <section>
+              <label class="block text-xs font-black text-slate-500 mb-2 uppercase tracking-widest">お問い合わせ内容 <span class="text-red-500">※</span></label>
+              <select name="inquiry_type" id="inquiry_type" required class="w-full border border-slate-300 rounded-lg p-4 bg-slate-50 focus:bg-white focus:ring-2 focus:ring-yellow-500 outline-none appearance-none font-bold text-slate-700 cursor-pointer">
+                <option value="">選択してください</option>
+                <option value="SES協業について">SES協業について</option>
+                <option value="フリーランス登録について">フリーランス登録について</option>
+                <option value="採用について">採用について</option>
+                <option value="その他">その他</option>
+              </select>
+            </section>
 
-          <section class="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div>
-              <label class="block text-xs font-black text-slate-500 mb-2 uppercase tracking-widest">お名前 <span class="text-red-500">※</span></label>
-              <input type="text" name="name" required placeholder="山田 太郎" class="w-full border border-slate-300 rounded-lg p-4 bg-slate-50 focus:bg-white focus:ring-2 focus:ring-yellow-500 outline-none transition-all" />
-            </div>
-            <div>
-              <label class="block text-xs font-black text-slate-500 mb-2 uppercase tracking-widest">ふりがな <span class="text-red-500">※</span></label>
-              <input type="text" name="kana" required placeholder="やまだ たろう" class="w-full border border-slate-300 rounded-lg p-4 bg-slate-50 focus:bg-white focus:ring-2 focus:ring-yellow-500 outline-none transition-all" />
-            </div>
-            <div>
-              <label class="block text-xs font-black text-slate-500 mb-2 uppercase tracking-widest">メールアドレス <span class="text-red-500">※</span></label>
-              <input type="email" name="email" required placeholder="example@sbt-inc.jp" class="w-full border border-slate-300 rounded-lg p-4 bg-slate-50 focus:bg-white focus:ring-2 focus:ring-yellow-500 outline-none transition-all" />
-            </div>
-            <div>
-              <label class="block text-xs font-black text-slate-500 mb-2 uppercase tracking-widest">電話番号 <span class="text-red-500">※</span></label>
-              <input type="tel" name="tel" required class="w-full border border-slate-300 rounded-lg p-4 bg-slate-50 focus:bg-white focus:ring-2 focus:ring-yellow-500 outline-none transition-all" />
-            </div>
-          </section>
+            <section class="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div>
+                <label class="block text-xs font-black text-slate-500 mb-2 uppercase tracking-widest">お名前 <span class="text-red-500">※</span></label>
+                <input type="text" name="name" required placeholder="山田 太郎" class="w-full border border-slate-300 rounded-lg p-4 bg-slate-50 focus:bg-white focus:ring-2 focus:ring-yellow-500 outline-none transition-all" />
+              </div>
+              <div>
+                <label class="block text-xs font-black text-slate-500 mb-2 uppercase tracking-widest">ふりがな <span class="text-red-500">※</span></label>
+                <input type="text" name="kana" required placeholder="やまだ たろう" class="w-full border border-slate-300 rounded-lg p-4 bg-slate-50 focus:bg-white focus:ring-2 focus:ring-yellow-500 outline-none transition-all" />
+              </div>
+              <div>
+                <label class="block text-xs font-black text-slate-500 mb-2 uppercase tracking-widest">メールアドレス <span class="text-red-500">※</span></label>
+                <input type="email" name="email" required placeholder="example@sbt-inc.jp" class="w-full border border-slate-300 rounded-lg p-4 bg-slate-50 focus:bg-white focus:ring-2 focus:ring-yellow-500 outline-none transition-all" />
+              </div>
+              <div>
+                <label class="block text-xs font-black text-slate-500 mb-2 uppercase tracking-widest">電話番号 <span class="text-red-500">※</span></label>
+                <input type="tel" name="tel" required class="w-full border border-slate-300 rounded-lg p-4 bg-slate-50 focus:bg-white focus:ring-2 focus:ring-yellow-500 outline-none transition-all" />
+              </div>
+            </section>
 
-          <section class="space-y-6">
-            <div>
-              <label class="block text-xs font-black text-slate-500 mb-2 uppercase tracking-widest">会社名 / 屋号（任意）</label>
-              <input type="text" id="company-input" name="company" placeholder="株式会社〇〇" class="w-full border border-slate-300 rounded-lg p-4 bg-slate-50 focus:bg-white focus:ring-2 focus:ring-yellow-500 outline-none transition-all" />
-            </div>
+            <section class="space-y-6">
+              <div>
+                <label class="block text-xs font-black text-slate-500 mb-2 uppercase tracking-widest">会社名 / 屋号（任意）</label>
+                <input type="text" id="company-input" name="company" placeholder="株式会社〇〇" class="w-full border border-slate-300 rounded-lg p-4 bg-slate-50 focus:bg-white focus:ring-2 focus:ring-yellow-500 outline-none transition-all" />
+              </div>
 
-            <div id="company-extra-fields" class="hidden space-y-6 overflow-hidden transition-all duration-500 opacity-0 transform -translate-y-4">
-              <div class="p-6 border-l-4 border-yellow-500 bg-slate-50 space-y-6 rounded-r-lg">
-                <div>
-                  <label class="block text-xs font-black text-slate-500 mb-2 uppercase tracking-widest">会社URL</label>
-                  <input type="url" name="company_url" placeholder="https://example.com" class="w-full border border-slate-300 rounded-lg p-4 bg-white focus:ring-2 focus:ring-yellow-500 outline-none transition-all" />
-                </div>
-                <div>
-                  <label class="block text-xs font-black text-slate-500 mb-2 uppercase tracking-widest">所在地</label>
-                  <input type="text" name="address" placeholder="東京都豊島区..." class="w-full border border-slate-300 rounded-lg p-4 bg-white focus:ring-2 focus:ring-yellow-500 outline-none transition-all" />
+              <div id="company-extra-fields" class="hidden space-y-6 overflow-hidden transition-all duration-500 opacity-0 transform -translate-y-4">
+                <div class="p-6 border-l-4 border-yellow-500 bg-slate-50 space-y-6 rounded-r-lg">
+                  <div>
+                    <label class="block text-xs font-black text-slate-500 mb-2 uppercase tracking-widest">会社URL</label>
+                    <input type="url" name="company_url" placeholder="https://example.com" class="w-full border border-slate-300 rounded-lg p-4 bg-white focus:ring-2 focus:ring-yellow-500 outline-none transition-all" />
+                  </div>
+                  <div>
+                    <label class="block text-xs font-black text-slate-500 mb-2 uppercase tracking-widest">所在地</label>
+                    <input type="text" name="address" placeholder="東京都豊島区..." class="w-full border border-slate-300 rounded-lg p-4 bg-white focus:ring-2 focus:ring-yellow-500 outline-none transition-all" />
+                  </div>
                 </div>
               </div>
+            </section>
+
+            <section>
+              <label class="block text-xs font-black text-slate-500 mb-2 uppercase tracking-widest">メッセージ本文 <span class="text-red-500">※</span></label>
+              <textarea name="message" rows="6" required placeholder="具体的なご相談内容をご記入ください。" class="w-full border border-slate-300 rounded-lg p-4 bg-slate-50 focus:bg-white focus:ring-2 focus:ring-yellow-500 outline-none resize-none transition-all"></textarea>
+            </section>
+
+            <section class="pt-6 border-t border-slate-100">
+              <p class="text-xs text-slate-600 mb-4 text-center">
+                ご入力いただいた個人情報は、お問い合わせへの回答および弊社のサービス提供の目的にのみ利用いたします。<br />
+                送信前に弊社の
+                <a href="/privacy" target="_blank" rel="noopener noreferrer" class="text-blue-600 underline hover:text-blue-800">
+                  個人情報保護方針
+                </a>
+                をご確認ください。
+              </p>
+              <div class="flex flex-col items-center">
+                <label class="flex items-center gap-3 cursor-pointer group">
+                  <input type="checkbox" name="agreement" required class="w-5 h-5 rounded border-slate-300 text-yellow-500 focus:ring-yellow-500 cursor-pointer" />
+                  <span class="text-sm font-bold text-slate-700 group-hover:text-slate-900 transition-colors">
+                    個人情報保護方針に同意する <span class="text-red-500">※</span>
+                  </span>
+                </label>
+              </div>
+            </section>
+          </div>
+
+          <div id="confirm-preview" class="hidden space-y-8 animate-in fade-in duration-500">
+            <div class="bg-yellow-50 border-l-4 border-yellow-500 p-4 mb-8">
+              <p class="text-sm text-yellow-800 font-bold text-center">入力内容をご確認の上、「この内容で送信する」ボタンを押してください。</p>
             </div>
-          </section>
+            <div id="preview-content" class="space-y-6 divide-y divide-slate-100">
+              </div>
+          </div>
 
-          <section>
-            <label class="block text-xs font-black text-slate-500 mb-2 uppercase tracking-widest">メッセージ本文 <span class="text-red-500">※</span></label>
-            <textarea name="message" rows="6" required placeholder="具体的なご相談内容をご記入ください。" class="w-full border border-slate-300 rounded-lg p-4 bg-slate-50 focus:bg-white focus:ring-2 focus:ring-yellow-500 outline-none resize-none transition-all"></textarea>
-          </section>
+          <div class="pt-4">
+            <button type="button" id="btn-to-confirm" class="w-full bg-slate-900 text-white font-black py-5 rounded-xl hover:bg-yellow-500 hover:text-slate-900 transition-all duration-300 shadow-lg flex items-center justify-center gap-3 text-lg group">
+              送信内容を確認する
+              <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 transition-transform group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6" />
+              </svg>
+            </button>
 
-          <section class="pt-6 border-t border-slate-100">
-            <p class="text-xs text-slate-600 mb-4 text-center">
-              ご入力いただいた個人情報は、お問い合わせへの回答および弊社のサービス提供の目的にのみ利用いたします。<br />
-              送信前に弊社の
-              <a href="/privacy" target="_blank" rel="noopener noreferrer" class="text-blue-600 underline hover:text-blue-800">
-                個人情報保護方針
-              </a>
-              をご確認ください。
-            </p>
-            <div class="flex flex-col items-center">
-              <label class="flex items-center gap-3 cursor-pointer group">
-                <input type="checkbox" name="agreement" required class="w-5 h-5 rounded border-slate-300 text-yellow-500 focus:ring-yellow-500 cursor-pointer" />
-                <span class="text-sm font-bold text-slate-700 group-hover:text-slate-900 transition-colors">
-                  個人情報保護方針に同意する <span class="text-red-500">※</span>
-                </span>
-              </label>
+            <div id="confirm-buttons" class="hidden flex flex-col md:flex-row gap-4">
+              <button type="button" id="btn-back" class="flex-1 bg-slate-200 text-slate-700 font-black py-5 rounded-xl hover:bg-slate-300 transition-all text-lg">
+                修正する
+              </button>
+              <button type="submit" class="flex-[2] bg-yellow-500 text-slate-900 font-black py-5 rounded-xl hover:bg-slate-900 hover:text-white transition-all text-lg shadow-xl shadow-yellow-500/20">
+                この内容で送信する
+              </button>
             </div>
-          </section>
+          </div>
 
-          <button type="submit" class="w-full bg-slate-900 text-white font-black py-5 rounded-xl hover:bg-yellow-500 hover:text-slate-900 transition-all duration-300 shadow-lg shadow-slate-200 active:scale-[0.98] flex items-center justify-center gap-3 text-lg group">
-            送信内容を確認する
-            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 transition-transform group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6" />
-            </svg>
-          </button>
         </form>
       </div>
     </div>
   </main>
 
   <script>
+    // 定数・要素の取得
+    const form = document.getElementById('contact-form') as HTMLFormElement;
+    const inputFields = document.getElementById('input-fields');
+    const confirmPreview = document.getElementById('confirm-preview');
+    const previewContent = document.getElementById('preview-content');
+    const btnToConfirm = document.getElementById('btn-to-confirm');
+    const confirmButtons = document.getElementById('confirm-buttons');
+    const pageTitle = document.getElementById('page-title');
     const companyInput = document.getElementById('company-input') as HTMLInputElement;
     const extraFields = document.getElementById('company-extra-fields');
 
+    // 項目名のマッピング
+    const fieldLabels: { [key: string]: string } = {
+      inquiry_type: "お問い合わせ内容",
+      name: "お名前",
+      kana: "ふりがな",
+      email: "メールアドレス",
+      tel: "電話番号",
+      company: "会社名 / 屋号",
+      company_url: "会社URL",
+      address: "所在地",
+      message: "メッセージ本文"
+    };
+
+    // 会社名入力時の動的制御 (踏襲)
     companyInput?.addEventListener('input', () => {
       if (companyInput.value.trim() !== "") {
         extraFields?.classList.remove('hidden');
@@ -117,6 +161,53 @@ import Layout from '../layouts/Layout.astro';
           extraFields?.classList.add('hidden');
         }, 500);
       }
+    });
+
+    // 確認画面へ切り替え
+    btnToConfirm?.addEventListener('click', () => {
+      // バリデーションチェック
+      if (!form.checkValidity()) {
+        form.reportValidity();
+        return;
+      }
+
+      // プレビューの生成
+      const formData = new FormData(form);
+      let previewHtml = "";
+
+      formData.forEach((value, key) => {
+        if (key === 'agreement') return; // 同意チェックは表示不要
+        if (!value && (key === 'company' || key === 'company_url' || key === 'address')) return; // 空の任意項目はスキップ
+
+        previewHtml += `
+          <div class="pt-4 first:pt-0">
+            <dt class="text-xs font-black text-slate-400 uppercase tracking-widest mb-1">${fieldLabels[key] || key}</dt>
+            <dd class="text-slate-800 font-bold whitespace-pre-wrap">${value}</dd>
+          </div>
+        `;
+      });
+
+      if (previewContent) previewContent.innerHTML = previewHtml;
+
+      // 表示の切り替え
+      inputFields?.classList.add('hidden');
+      btnToConfirm?.classList.add('hidden');
+      confirmPreview?.classList.remove('hidden');
+      confirmButtons?.classList.remove('hidden');
+      if (pageTitle) pageTitle.innerText = "入力内容の確認";
+      
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+
+    // 入力画面に戻る
+    document.getElementById('btn-back')?.addEventListener('click', () => {
+      inputFields?.classList.remove('hidden');
+      btnToConfirm?.classList.remove('hidden');
+      confirmPreview?.classList.add('hidden');
+      confirmButtons?.classList.add('hidden');
+      if (pageTitle) pageTitle.innerText = "お問い合わせ";
+      
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     });
   </script>
 </Layout>

@@ -1,0 +1,23 @@
+---
+import Layout from '../layouts/Layout.astro';
+---
+
+<Layout title="送信完了 | 株式会社SBT">
+  <main class="bg-slate-50 min-h-[80vh] flex items-center justify-center px-6">
+    <div class="max-w-xl w-full bg-white border border-slate-300 rounded-2xl p-10 md:p-16 text-center shadow-xl">
+      <div class="w-20 h-20 bg-green-100 text-green-600 rounded-full flex items-center justify-center mx-auto mb-8">
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-10 h-10" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+        </svg>
+      </div>
+      <h1 class="text-2xl md:text-3xl font-black text-slate-900 mb-4">送信が完了いたしました</h1>
+      <p class="text-slate-500 leading-relaxed mb-10">
+        お問い合わせいただきありがとうございます。<br class="hidden md:block" />
+        内容を確認の上、担当者より折り返しご連絡させていただきます。
+      </p>
+      <a href="/" class="inline-block bg-slate-900 text-white font-black px-8 py-4 rounded-xl hover:bg-yellow-500 hover:text-slate-900 transition-all">
+        トップページへ戻る
+      </a>
+    </div>
+  </main>
+</Layout>
