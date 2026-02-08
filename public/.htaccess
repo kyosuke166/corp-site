@@ -1,0 +1,6 @@
+# Webサーバの書き換えエンジンを有効にする
+RewriteEngine On
+
+# "/submit-contact" へのアクセスを、内部的に "send.php" へ転送する
+# Lフラグは「ここで書き換え終了」という意味
+RewriteRule ^submit-contact$ send.php [L]

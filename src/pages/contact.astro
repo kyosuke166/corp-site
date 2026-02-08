@@ -1,137 +1,122 @@
 ---
 import Layout from '../layouts/Layout.astro';
-import { SITE_DATA } from '../constants';
 ---
 
-<Layout title="お問い合わせ">
-  <main class="max-w-3xl mx-auto py-16 px-6">
-    <h1 class="text-3xl font-extrabold border-l-4 border-yellow-400 pl-4 mb-8">お問い合わせ</h1>
-    
-    <p class="text-slate-600 mb-10 leading-relaxed">
-      弊社サービスへのご質問、案件のご相談など、お気軽にお問い合わせください。<br />
-      内容を確認後、担当者より折り返しご連絡させていただきます。
-    </p>
-
-    <form class="space-y-6">
-      <div>
-        <label class="block text-sm font-bold text-slate-700 mb-2">
-          お問い合わせ種類 <span class="text-red-500 font-normal text-xs">※必須</span>
-        </label>
-        <select class="w-full border border-slate-300 rounded-md px-4 py-2 focus:ring-2 focus:ring-yellow-400 focus:border-transparent outline-none bg-white" required>
-          <option value="">選択してください</option>
-          <option value="SES協業のご相談について">SES協業のご相談について</option>
-          <option value="フリーランス登録について">フリーランス登録について</option>
-          <option value="採用について">採用について</option>
-          <option value="その他">その他</option>
-        </select>
+<Layout title="お問い合わせ | 株式会社SBT">
+  <main class="bg-slate-50 min-h-screen pb-20">
+    <div class="bg-slate-900 py-16 md:py-12 px-6">
+      <div class="max-w-5xl mx-auto text-center md:text-left">
+        <h1 class="text-sm font-bold text-yellow-500 tracking-[0.3em] uppercase mb-4">Contact</h1>
+        <h2 class="text-3xl md:text-5xl font-bold text-white leading-tight">お問い合わせ</h2>
       </div>
+    </div>
 
-      <div class="space-y-4">
-        <div>
-          <label class="block text-sm font-bold text-slate-700 mb-2">貴社名</label>
-          <input 
-            type="text" 
-            id="company-input"
-            class="w-full border border-slate-300 rounded-md px-4 py-2 focus:ring-2 focus:ring-yellow-400 outline-none" 
-          />
-        </div>
+    <div class="max-w-4xl mx-auto px-6 py-12 md:py-16">
+      <div class="bg-white border border-slate-300 rounded-lg p-6 md:p-12 shadow-md">
         
-        <div id="company-extra-fields" class="hidden space-y-4 border-l-2 border-slate-100 pl-4 transition-all duration-300">
-          <div>
-            <label class="block text-sm font-bold text-slate-700 mb-2">会社所在地</label>
-            <div class="grid md:grid-cols-4 gap-4">
-              <input type="text" placeholder="郵便番号" class="md:col-span-1 border border-slate-300 rounded-md px-4 py-2 focus:ring-2 focus:ring-yellow-400 outline-none" />
-              <input type="text" placeholder="住所" class="md:col-span-3 border border-slate-300 rounded-md px-4 py-2 focus:ring-2 focus:ring-yellow-400 outline-none" />
+        <form action="/submit-contact" method="POST" class="space-y-10">
+          
+          <section>
+            <label class="block text-xs font-black text-slate-500 mb-2 uppercase tracking-widest">お問い合わせ内容 <span class="text-red-500">※</span></label>
+            <select name="inquiry_type" required class="w-full border border-slate-300 rounded-lg p-4 bg-slate-50 focus:bg-white focus:ring-2 focus:ring-yellow-500 outline-none appearance-none font-bold text-slate-700 cursor-pointer">
+              <option value="">選択してください</option>
+              <option value="SES協業について">SES協業について</option>
+              <option value="フリーランス登録について">フリーランス登録について</option>
+              <option value="採用について">採用について</option>
+              <option value="その他">その他</option>
+            </select>
+          </section>
+
+          <section class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+              <label class="block text-xs font-black text-slate-500 mb-2 uppercase tracking-widest">お名前 <span class="text-red-500">※</span></label>
+              <input type="text" name="name" required placeholder="山田 太郎" class="w-full border border-slate-300 rounded-lg p-4 bg-slate-50 focus:bg-white focus:ring-2 focus:ring-yellow-500 outline-none transition-all" />
             </div>
-          </div>
-          <div>
-            <label class="block text-sm font-bold text-slate-700 mb-2">会社ホームページURL</label>
-            <input type="url" placeholder="https://example.com" class="w-full border border-slate-300 rounded-md px-4 py-2 focus:ring-2 focus:ring-yellow-400 outline-none" />
-          </div>
-        </div>
+            <div>
+              <label class="block text-xs font-black text-slate-500 mb-2 uppercase tracking-widest">ふりがな <span class="text-red-500">※</span></label>
+              <input type="text" name="kana" required placeholder="やまだ たろう" class="w-full border border-slate-300 rounded-lg p-4 bg-slate-50 focus:bg-white focus:ring-2 focus:ring-yellow-500 outline-none transition-all" />
+            </div>
+            <div>
+              <label class="block text-xs font-black text-slate-500 mb-2 uppercase tracking-widest">メールアドレス <span class="text-red-500">※</span></label>
+              <input type="email" name="email" required placeholder="example@sbt-inc.jp" class="w-full border border-slate-300 rounded-lg p-4 bg-slate-50 focus:bg-white focus:ring-2 focus:ring-yellow-500 outline-none transition-all" />
+            </div>
+            <div>
+              <label class="block text-xs font-black text-slate-500 mb-2 uppercase tracking-widest">電話番号 <span class="text-red-500">※</span></label>
+              <input type="tel" name="tel" required class="w-full border border-slate-300 rounded-lg p-4 bg-slate-50 focus:bg-white focus:ring-2 focus:ring-yellow-500 outline-none transition-all" />
+            </div>
+          </section>
 
-        <div class="grid md:grid-cols-2 gap-6">
-          <div>
-            <label class="block text-sm font-bold text-slate-700 mb-2">部署名</label>
-            <input type="text" class="w-full border border-slate-300 rounded-md px-4 py-2 focus:ring-2 focus:ring-yellow-400 outline-none" />
-          </div>
-          <div>
-            <label class="block text-sm font-bold text-slate-700 mb-2">役職名</label>
-            <input type="text" class="w-full border border-slate-300 rounded-md px-4 py-2 focus:ring-2 focus:ring-yellow-400 outline-none" />
-          </div>
-        </div>
-      </div>
+          <section class="space-y-6">
+            <div>
+              <label class="block text-xs font-black text-slate-500 mb-2 uppercase tracking-widest">会社名 / 屋号（任意）</label>
+              <input type="text" id="company-input" name="company" placeholder="株式会社〇〇" class="w-full border border-slate-300 rounded-lg p-4 bg-slate-50 focus:bg-white focus:ring-2 focus:ring-yellow-500 outline-none transition-all" />
+            </div>
 
-      <div class="grid md:grid-cols-2 gap-6">
-        <div>
-          <label class="block text-sm font-bold text-slate-700 mb-2">
-            氏名 <span class="text-red-500 font-normal text-xs">※必須</span>
-          </label>
-          <input type="text" placeholder="山田 太郎" class="w-full border border-slate-300 rounded-md px-4 py-2 focus:ring-2 focus:ring-yellow-400 outline-none" required />
-        </div>
-        <div>
-          <label class="block text-sm font-bold text-slate-700 mb-2">
-            フリガナ <span class="text-red-500 font-normal text-xs">※必須</span>
-          </label>
-          <input type="text" placeholder="ヤマダ タロウ" class="w-full border border-slate-300 rounded-md px-4 py-2 focus:ring-2 focus:ring-yellow-400 outline-none" required />
-        </div>
-      </div>
+            <div id="company-extra-fields" class="hidden space-y-6 overflow-hidden transition-all duration-500 opacity-0 transform -translate-y-4">
+              <div class="p-6 border-l-4 border-yellow-500 bg-slate-50 space-y-6 rounded-r-lg">
+                <div>
+                  <label class="block text-xs font-black text-slate-500 mb-2 uppercase tracking-widest">会社URL</label>
+                  <input type="url" name="company_url" placeholder="https://example.com" class="w-full border border-slate-300 rounded-lg p-4 bg-white focus:ring-2 focus:ring-yellow-500 outline-none transition-all" />
+                </div>
+                <div>
+                  <label class="block text-xs font-black text-slate-500 mb-2 uppercase tracking-widest">所在地</label>
+                  <input type="text" name="address" placeholder="東京都豊島区..." class="w-full border border-slate-300 rounded-lg p-4 bg-white focus:ring-2 focus:ring-yellow-500 outline-none transition-all" />
+                </div>
+              </div>
+            </div>
+          </section>
 
-      <div class="grid md:grid-cols-2 gap-6">
-        <div>
-          <label class="block text-sm font-bold text-slate-700 mb-2">
-            メールアドレス <span class="text-red-500 font-normal text-xs">※必須</span>
-          </label>
-          <input type="email" placeholder="example@sbt-inc.co.jp" class="w-full border border-slate-300 rounded-md px-4 py-2 focus:ring-2 focus:ring-yellow-400 outline-none" required />
-        </div>
-        <div>
-          <label class="block text-sm font-bold text-slate-700 mb-2">
-            電話番号 <span class="text-red-500 font-normal text-xs">※必須</span>
-          </label>
-          <input type="tel" class="w-full border border-slate-300 rounded-md px-4 py-2 focus:ring-2 focus:ring-yellow-400 outline-none" required />
-        </div>
-      </div>
+          <section>
+            <label class="block text-xs font-black text-slate-500 mb-2 uppercase tracking-widest">メッセージ本文 <span class="text-red-500">※</span></label>
+            <textarea name="message" rows="6" required placeholder="具体的なご相談内容をご記入ください。" class="w-full border border-slate-300 rounded-lg p-4 bg-slate-50 focus:bg-white focus:ring-2 focus:ring-yellow-500 outline-none resize-none transition-all"></textarea>
+          </section>
 
-      <div>
-        <label class="block text-sm font-bold text-slate-700 mb-2">
-          お問い合わせ内容 <span class="text-red-500 font-normal text-xs">※必須</span>
-        </label>
-        <textarea rows="6" class="w-full border border-slate-300 rounded-md px-4 py-2 focus:ring-2 focus:ring-yellow-400 outline-none" required></textarea>
-      </div>
+          <section class="pt-6 border-t border-slate-100">
+            <p class="text-xs text-slate-600 mb-4 text-center">
+              ご入力いただいた個人情報は、お問い合わせへの回答および弊社のサービス提供の目的にのみ利用いたします。<br />
+              送信前に弊社の
+              <a href="/privacy" target="_blank" rel="noopener noreferrer" class="text-blue-600 underline hover:text-blue-800">
+                個人情報保護方針
+              </a>
+              をご確認ください。
+            </p>
+            <div class="flex flex-col items-center">
+              <label class="flex items-center gap-3 cursor-pointer group">
+                <input type="checkbox" name="agreement" required class="w-5 h-5 rounded border-slate-300 text-yellow-500 focus:ring-yellow-500 cursor-pointer" />
+                <span class="text-sm font-bold text-slate-700 group-hover:text-slate-900 transition-colors">
+                  個人情報保護方針に同意する <span class="text-red-500">※</span>
+                </span>
+              </label>
+            </div>
+          </section>
 
-      <div class="bg-slate-50 p-6 rounded-lg border border-slate-100">
-        <p class="text-xs text-slate-600 mb-4 text-center">
-          ご入力いただいた個人情報は、お問い合わせへの回答および弊社のサービス提供の目的にのみ利用いたします。<br />
-          送信前に弊社の
-          <a href="/privacy" target="_blank" rel="noopener noreferrer" class="text-blue-600 underline hover:text-blue-800">
-            個人情報保護方針
-          </a>
-          をご確認ください。
-        </p>
-        <div class="flex justify-center items-center gap-2">
-          <input type="checkbox" id="agree" class="w-4 h-4 cursor-pointer" required />
-          <label for="agree" class="text-sm font-bold text-slate-700 cursor-pointer">同意して送信する</label>
-        </div>
+          <button type="submit" class="w-full bg-slate-900 text-white font-black py-5 rounded-xl hover:bg-yellow-500 hover:text-slate-900 transition-all duration-300 shadow-lg shadow-slate-200 active:scale-[0.98] flex items-center justify-center gap-3 text-lg group">
+            送信内容を確認する
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 transition-transform group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6" />
+            </svg>
+          </button>
+        </form>
       </div>
-
-      <div class="text-center">
-        <button type="submit" class="bg-slate-800 text-white font-bold py-4 px-12 rounded-full hover:bg-slate-700 transition shadow-lg">
-          上記の内容で送信する
-        </button>
-      </div>
-    </form>
+    </div>
   </main>
+
+  <script>
+    const companyInput = document.getElementById('company-input') as HTMLInputElement;
+    const extraFields = document.getElementById('company-extra-fields');
+
+    companyInput?.addEventListener('input', () => {
+      if (companyInput.value.trim() !== "") {
+        extraFields?.classList.remove('hidden');
+        setTimeout(() => {
+          extraFields?.classList.add('opacity-100', 'translate-y-0');
+        }, 10);
+      } else {
+        extraFields?.classList.remove('opacity-100', 'translate-y-0');
+        setTimeout(() => {
+          extraFields?.classList.add('hidden');
+        }, 500);
+      }
+    });
+  </script>
 </Layout>
-
-<script>
-  const companyInput = document.getElementById('company-input') as HTMLInputElement;
-  const companyExtraFields = document.getElementById('company-extra-fields');
-
-  companyInput?.addEventListener('input', () => {
-    if (companyInput.value.trim().length > 0) {
-      companyExtraFields?.classList.remove('hidden');
-    } else {
-      companyExtraFields?.classList.add('hidden');
-    }
-  });
-</script>

@@ -1,65 +1,76 @@
 ---
 import Layout from '../layouts/Layout.astro';
-// 外部JSONファイルをインポート
 import projects from '../data/projects.json';
 ---
 
-<Layout title="最新案件一覧 | SBT">
-  <div class="max-w-5xl mx-auto px-6 py-16">
-    <div class="mb-12 border-l-4 border-yellow-500 pl-6">
-      <h1 class="text-3xl font-bold text-slate-900 tracking-tight">最新案件一覧</h1>
-      <p class="text-slate-500 mt-2">エンジニアの市場価値に直結する、透明性の高い案件情報を公開しています。</p>
+<Layout title="最新案件一覧 | 高還元案件多数">
+  <main class="bg-slate-50 min-h-screen pb-20">
+    <div class="bg-slate-900 py-16 md:py-10 px-6">
+      <div class="max-w-5xl mx-auto text-center md:text-left">
+        <h1 class="text-sm font-bold text-yellow-500 tracking-[0.3em] uppercase mb-4">Available Projects</h1>
+        <h2 class="text-3xl md:text-5xl font-bold text-white leading-tight">最新案件一覧</h2>
+        <p class="text-slate-400 mt-6 max-w-2xl leading-relaxed mx-auto md:mx-0">
+          SBTが保有する案件の一部を公開しています。商流の浅い直案件・エンド案件を中心に、エンジニアの正当な評価を約束するプロジェクトのみを厳選しています。
+        </p>
+      </div>
     </div>
 
-    <div class="grid gap-8">
-      {projects.map((p) => (
-        <div class="group bg-white border border-slate-200 rounded-2xl p-6 md:p-8 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
-          <div class="flex flex-wrap items-center gap-3 mb-4">
-            <span class="px-3 py-1 bg-slate-900 text-white text-[10px] font-bold uppercase tracking-widest rounded-full">
-              {p.tag}
-            </span>
-            <div class="flex gap-2">
-              {p.skills.map((skill) => (
-                <span class="text-xs font-medium text-slate-500 bg-slate-100 px-2 py-1 rounded">#{skill}</span>
+    <div class="max-w-4xl mx-auto px-6 py-12 md:py-16">
+      <div class="grid gap-10">
+        {projects.map((p, index) => (
+          <div key={index} class="bg-white border border-slate-300 rounded-lg p-6 md:p-8 shadow-md hover:shadow-2xl hover:-translate-y-1 transition-all duration-300 group">
+            
+            <div class="mb-4 text-left">
+              <span class="inline-block bg-[#004a99] text-white text-[10px] font-bold px-3 py-1 rounded">
+                {p.tag}
+              </span>
+            </div>
+
+            <h3 class="text-xl md:text-2xl font-bold text-[#004a99] mb-6 leading-snug group-hover:text-yellow-600 transition-colors duration-300">
+              {p.title}
+            </h3>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-0 border border-slate-200 rounded-md overflow-hidden mb-6">
+              <div class="bg-slate-50 p-4 border-b md:border-b-0 md:border-r border-slate-200">
+                <p class="text-[10px] font-bold text-slate-400 mb-1 tracking-wider uppercase">作業期間</p>
+                <p class="text-[13px] font-bold text-slate-700">{p.period}</p>
+              </div>
+              <div class="bg-slate-50 p-4 border-b md:border-b-0 md:border-r border-slate-200">
+                <p class="text-[10px] font-bold text-slate-400 mb-1 tracking-wider uppercase">作業場所</p>
+                <p class="text-[13px] font-bold text-slate-700 leading-snug">{p.location}</p>
+              </div>
+              <div class="bg-slate-50 p-4">
+                <p class="text-[10px] font-bold text-slate-400 mb-1 tracking-wider uppercase">単価</p>
+                <p class="text-lg font-black text-[#d00000] tracking-tight">{p.price}</p>
+              </div>
+            </div>
+
+            <div class="mb-8">
+              <p class="text-[10px] font-black text-slate-400 mb-2 tracking-tighter italic">≪ 概要 ≫</p>
+              <p class="text-[14px] text-slate-600 leading-relaxed pl-1">
+                {p.summary}
+              </p>
+            </div>
+
+            <div class="flex flex-wrap gap-2 pt-4 border-t border-slate-100">
+              {p.skills.map((skill, sIndex) => (
+                <span key={sIndex} class="bg-[#eef4ff] text-[#004a99] border border-[#cce0ff] px-3 py-1 rounded-full text-[11px] font-bold">
+                  {skill}
+                </span>
               ))}
             </div>
-          </div>
 
-          <h2 class="text-xl md:text-2xl font-bold text-slate-900 mb-6 group-hover:text-yellow-600 transition-colors">
-            {p.title}
-          </h2>
-
-          <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6 bg-slate-50 p-5 rounded-xl">
-            <div>
-              <p class="text-[10px] font-bold text-slate-400 uppercase mb-1">作業単価（税込）</p>
-              <p class="text-xl font-black text-red-600">{p.price}<span class="text-sm ml-1 text-slate-500">/月</span></p>
-            </div>
-            <div>
-              <p class="text-[10px] font-bold text-slate-400 uppercase mb-1">作業場所</p>
-              <p class="text-sm font-semibold text-slate-700 leading-snug">{p.location}</p>
-            </div>
-            <div>
-              <p class="text-[10px] font-bold text-slate-400 uppercase mb-1">期間</p>
-              <p class="text-sm font-semibold text-slate-700">{p.period}</p>
+            <div class="mt-8 flex justify-end">
+              <a href="/contact" class="text-sm font-bold text-[#004a99] hover:text-yellow-600 flex items-center gap-1 transition-colors">
+                この案件を詳しく聞く
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 20 20" fill="currentColor">
+                  <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd" />
+                </svg>
+              </a>
             </div>
           </div>
-
-          <div class="border-t border-slate-100 pt-6">
-            <p class="text-sm text-slate-600 leading-relaxed italic">
-              <span class="font-bold text-slate-400 not-italic mr-2">DETAILS:</span>{p.summary}
-            </p>
-          </div>
-          
-          <div class="mt-8 flex justify-end">
-            <a href="/contact" class="inline-flex items-center gap-2 text-sm font-bold text-slate-900 hover:text-yellow-600 transition">
-              この案件について詳しく聞く
-              <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
-              </svg>
-            </a>
-          </div>
-        </div>
-      ))}
+        ))}
+      </div>
     </div>
-  </div>
+  </main>
 </Layout>

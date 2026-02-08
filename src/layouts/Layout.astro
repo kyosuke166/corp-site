@@ -1,116 +1,147 @@
 ---
-import { SITE_DATA } from '../constants';
-
 interface Props {
-	title?: string;
+  title: string;
 }
 
 const { title } = Astro.props;
-const displayTitle = title ? `${title} | ${SITE_DATA.companyName}` : SITE_DATA.companyName;
+
+// メニュー項目の定義（会社情報を追加）
+const navItems = [
+  { name: 'ホーム', href: '/' },
+  { name: '案件一覧', href: '/projects' },
+  { name: '会社情報', href: '/company' },
+  { name: '採用情報', href: '/recruit' },
+];
 ---
 
 <!doctype html>
 <html lang="ja">
-	<head>
-		<meta charset="UTF-8" />
-		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<title>{displayTitle}</title>
-	</head>
-	<body class="bg-slate-50 font-sans text-slate-900 antialiased m-0 p-0">
-		<header class="sticky top-0 z-50 w-full bg-white/80 backdrop-blur-md border-b border-slate-200">
-			<div class="max-w-6xl mx-auto px-4 md:px-6 h-16 md:h-20 flex items-center justify-between">
-				
-				<a href="/" class="hover:opacity-80 transition-opacity flex-shrink-0 relative z-[60]">
-				<img src="/header_logo.png" alt={SITE_DATA.companyName} class="h-10 md:h-20 w-auto object-contain" />
-				</a>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" type="image/x-icon" href="/SBT.ico" />
+    <meta name="generator" content={Astro.generator} />
+    
+    <title>{title} | 株式会社SBT（エスビーティー）</title>
+    <meta name="description" content="株式会社SBTは、エンジニアの市場価値を最大化するパートナーです。Java, Python, AWS等の高還元案件、フリーランスエンジニア向けの最新募集情報を掲載中。" />
+    <meta name="keywords" content="SBT, エスビーティー, エンジニア 採用, フリーランス 案件, 高還元, システム開発" />
 
-				<nav class="hidden md:flex items-center gap-8 text-sm font-bold">
-				<a href="/company" class="text-slate-600 hover:text-yellow-600 no-underline transition">会社概要</a>
-				<a href="/projects" class="text-slate-600 hover:text-yellow-600 no-underline transition">案件一覧</a>
-				<a href="/contact" class="bg-slate-900 text-white px-6 py-2.5 rounded-full no-underline hover:bg-slate-800 transition">お問い合わせ</a>
-				</nav>
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content="エンジニアに正当な対価と最高のプロジェクトを。株式会社SBTの最新案件・採用情報。" />
+    <meta property="og:type" content="website" />
+    <meta property="og:image" content="/ogp_image.png" />
+  </head>
+  <body class="bg-slate-50 text-slate-900 antialiased font-sans">
+    <header class="fixed w-full top-0 z-50 bg-white/80 backdrop-blur-md border-b border-slate-200">
+      <div class="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
+        <a href="/" class="flex items-center">
+          <img src="/header_logo.png" alt="株式会社SBT" class="h-20 w-auto" />
+        </a>
 
-				<button id="menu-btn" class="md:hidden flex flex-col justify-center items-center w-10 h-10 gap-1.5 relative z-[60] outline-none" aria-label="メニュー">
-				<span class="w-6 h-0.5 bg-slate-900 transition-all duration-300" id="line1"></span>
-				<span class="w-6 h-0.5 bg-slate-900 transition-all duration-300" id="line2"></span>
-				<span class="w-6 h-0.5 bg-slate-900 transition-all duration-300" id="line3"></span>
-				</button>
+        <nav class="hidden md:flex items-center gap-8">
+          {navItems.map(item => (
+            <a href={item.href} class="text-sm font-bold text-slate-600 hover:text-yellow-600 transition-colors">
+              {item.name}
+            </a>
+          ))}
+          <a href="/contact" class="bg-slate-900 text-white px-6 py-2.5 rounded-full text-sm font-bold hover:bg-yellow-500 hover:text-slate-900 transition-all shadow-md active:scale-95">
+            お問い合わせ
+          </a>
+        </nav>
 
-				<div id="mobile-menu" class="fixed inset-0 bg-white z-[50] flex flex-col items-center justify-center gap-8 translate-x-full transition-transform duration-300 md:hidden">
-				<nav class="flex flex-col items-center gap-8 text-xl font-bold">
-					<a href="/" class="mobile-link text-slate-900 no-underline">トップページ</a>
-					<a href="/company" class="mobile-link text-slate-900 no-underline">会社概要</a>
-					<a href="/projects" class="mobile-link text-slate-900 no-underline">案件一覧</a>
-					<a href="/contact" class="mobile-link bg-slate-900 text-white px-10 py-4 rounded-full no-underline shadow-lg">お問い合わせ</a>
-				</nav>
-				</div>
-			</div>
-		</header>
+        <button id="menu-btn" class="md:hidden w-10 h-10 flex items-center justify-center text-slate-900">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7" />
+          </svg>
+        </button>
+      </div>
 
-		<script>
-		const menuBtn = document.getElementById('menu-btn');
-		const mobileMenu = document.getElementById('mobile-menu');
-		const line1 = document.getElementById('line1');
-		const line2 = document.getElementById('line2');
-		const line3 = document.getElementById('line3');
-		const mobileLinks = document.querySelectorAll('.mobile-link');
+      <div id="mobile-menu" class="hidden fixed inset-0 z-40 bg-slate-900/95 backdrop-blur-xl">
+        <div class="flex flex-col items-center justify-center h-full gap-10">
+          {navItems.map(item => (
+            <a href={item.href} class="text-2xl font-black text-white hover:text-yellow-500 transition-colors">
+              {item.name}
+            </a>
+          ))}
+          <a href="/contact" class="bg-yellow-500 text-slate-900 px-10 py-4 rounded-full text-xl font-black shadow-xl">
+            お問い合わせ
+          </a>
+          <button id="close-btn" class="mt-10 text-slate-400 hover:text-white transition">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+        </div>
+      </div>
+    </header>
 
-		let isOpen = false;
+    <div class="pt-20">
+      <slot />
+    </div>
 
-		function toggleMenu() {
-			isOpen = !isOpen;
-			if (isOpen) {
-			// メニューを開く
-			mobileMenu?.classList.remove('translate-x-full');
-			// 三本線を「×」に変形
-			line1?.classList.add('rotate-45', 'translate-y-[8px]');
-			line2?.classList.add('opacity-0');
-			line3?.classList.add('-rotate-45', '-translate-y-[8px]');
-			document.body.style.overflow = 'hidden'; // 背後をスクロールさせない
-			} else {
-			// メニューを閉じる
-			mobileMenu?.classList.add('translate-x-full');
-			line1?.classList.remove('rotate-45', 'translate-y-[8px]');
-			line2?.classList.remove('opacity-0');
-			line3?.classList.remove('-rotate-45', '-translate-y-[8px]');
-			document.body.style.overflow = '';
-			}
-		}
+    <footer class="bg-slate-900 pt-5 pb-10 px-6 text-center md:text-left border-t border-slate-700">
+      <div class="max-w-7xl mx-auto">
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-12 mb-10">
+          <div class="col-span-1 md:col-span-2">
+            <div class="flex items-center justify-center md:justify-start gap-2 mb-4">
+              <span class="text-white font-bold text-xl tracking-tighter">株式会社ＳＢＴ</span>
+            </div>
+            <p class="text-slate-400 text-sm max-w-sm leading-relaxed mx-auto md:mx-0">
+              技術を追求するエンジニアに、正当な対価と最高のプロジェクトを。<br />
+			  SBTはエンジニアの市場価値を最大化するパートナーです。
+            </p>
+          </div>
+          
+          <div>
+            <h4 class="text-white font-bold mb-3 text-xs uppercase tracking-[0.2em] text-yellow-500">Service</h4>
+            <div class="flex flex-col gap-2">
+              <a href="/projects" class="text-slate-400 hover:text-white transition text-sm">案件一覧</a>
+              <a href="/recruit" class="text-slate-400 hover:text-white transition text-sm">採用情報</a>
+              <a href="/company" class="text-slate-400 hover:text-white transition text-sm">会社情報</a>
+            </div>
+          </div>
 
-		menuBtn?.addEventListener('click', toggleMenu);
+          <div>
+            <h4 class="text-white font-bold mb-3 text-xs uppercase tracking-[0.2em] text-yellow-500">Legal</h4>
+            <div class="flex flex-col gap-2">
+              <a href="/privacy" class="text-slate-400 hover:text-white transition text-sm">個人情報保護方針</a>
+              <a href="/security" class="text-slate-400 hover:text-white transition text-sm">情報セキュリティ方針</a>
+              <a href="/contact" class="text-slate-400 hover:text-white transition text-sm">お問い合わせ</a>
+            </div>
+          </div>
+        </div>
+        
+        <div class="border-t border-slate-700 pt-2 text-center">
+          <p class="text-slate-500 text-[12px] tracking-widest font-bold">
+            &copy; 2015 SBT-INC. ALL RIGHTS RESERVED.
+          </p>
+        </div>
+      </div>
+    </footer>
 
-		// リンクをクリックしたらメニューを閉じる
-		mobileLinks.forEach(link => {
-			link.addEventListener('click', () => {
-			if (isOpen) toggleMenu();
-			});
-		});
-		</script>
+    <script>
+      const menuBtn = document.getElementById('menu-btn');
+      const closeBtn = document.getElementById('close-btn');
+      const mobileMenu = document.getElementById('mobile-menu');
 
-		<slot />
+      menuBtn?.addEventListener('click', () => {
+        mobileMenu?.classList.remove('hidden');
+        document.body.style.overflow = 'hidden';
+      });
 
-		<footer class="bg-slate-800 py-12 text-slate-300 border-t border-slate-700 mt-20">
-			<div class="max-w-6xl mx-auto px-6">
-				<div class="grid md:grid-cols-2 gap-8 mb-8 text-left">
-					<div>
-						<p class="font-bold text-white mb-2">{SITE_DATA.companyName}</p>
-						<p class="text-sm">〒{SITE_DATA.postalCode} {SITE_DATA.address}</p>
-					</div>
-					<div class="flex flex-wrap gap-x-8 gap-y-2 text-sm md:justify-end items-start">
-						<a href="/privacy" class="hover:text-white no-underline text-slate-300">個人情報保護方針</a>
-						<a href="/security" class="hover:text-white no-underline text-slate-300">情報セキュリティ方針</a>
-						<a href="/contact" class="hover:text-white no-underline text-slate-300">お問い合わせ</a>
-					</div>
-				</div>
-				<p class="text-xs text-slate-500 text-center">© 2015 {SITE_DATA.companyName} All Rights Reserved.</p>
-			</div>
-		</footer>
-	</body>
+      closeBtn?.addEventListener('click', () => {
+        mobileMenu?.classList.add('hidden');
+        document.body.style.overflow = '';
+      });
+
+      const mobileLinks = mobileMenu?.querySelectorAll('a');
+      mobileLinks?.forEach(link => {
+        link.addEventListener('click', () => {
+          mobileMenu?.classList.add('hidden');
+          document.body.style.overflow = '';
+        });
+      });
+    </script>
+  </body>
 </html>
-
-<style is:global>
-	/* 基本の余白リセット（保険） */
-	body, h1, h2, p { margin: 0; padding: 0; }
-	html { scroll-behavior: smooth; }
-</style>
