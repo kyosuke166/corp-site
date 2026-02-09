@@ -56,27 +56,24 @@ import Layout from '../layouts/Layout.astro';
     </div>
   </main>
 
-  <script>
+  <script is:inline>
     // --- 1. 案件更新処理 ---
     let count = 0;
     const t = document.getElementById('admin-trigger');
-    const SECRET_TOKEN = 'kyosuke166'; // PHP側と合わせる
+    const SECRET_TOKEN = 'kyosuke166';
 
     t?.addEventListener('click', () => {
       count++;
       if (count === 5) {
         const userInput = prompt('管理者トークンを入力してください:');
-        
-        // 正解のときだけ実行、それ以外（間違い・キャンセル・空文字）は完全に無視
         if (userInput === SECRET_TOKEN) {
           window.location.href = `/update_projects.php?token=${encodeURIComponent(userInput)}`;
         }
-
-        count = 0; // カウントリセット
+        count = 0;
       }
-      // 3秒以内に5連打しないと無効化
       setTimeout(() => { count = 0; }, 3000);
     });
+
     // --- 2. 最新案件の読み込みと描画処理 ---
     async function loadProjects() {
       const container = document.getElementById('project-list-container');
@@ -130,7 +127,11 @@ import Layout from '../layouts/Layout.astro';
               </div>
 
               <div class="mt-8 flex justify-end">
-                <a href="/contact" class="text-sm font-bold text-[#004a99] hover:text-yellow-600 flex items-center gap-1 transition-colors">
+                <a 
+                  href="/contact" 
+                  onclick="trackClick('${p.title.replace(/'/g, "\\'")}')" 
+                  class="text-sm font-bold text-[#004a99] hover:text-yellow-600 flex items-center gap-1 transition-colors"
+                >
                   この案件を詳しく聞く
                   <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 20 20" fill="currentColor">
                     <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd" />
@@ -145,7 +146,6 @@ import Layout from '../layouts/Layout.astro';
       }
     }
 
-    // ページ読み込み時に実行
     loadProjects();
   </script>
 </Layout>

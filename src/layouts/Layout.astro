@@ -5,7 +5,6 @@ interface Props {
 
 const { title } = Astro.props;
 
-// メニュー項目の定義（会社情報を追加）
 const navItems = [
   { name: 'ホーム', href: '/' },
   { name: '案件一覧', href: '/projects' },
@@ -89,7 +88,7 @@ const navItems = [
             </div>
             <p class="text-slate-400 text-sm max-w-sm leading-relaxed mx-auto md:mx-0">
               技術を追求するエンジニアに、正当な対価と最高のプロジェクトを。<br />
-			  SBTはエンジニアの市場価値を最大化するパートナーです。
+              SBTはエンジニアの市場価値を最大化するパートナーです。
             </p>
           </div>
           
@@ -120,7 +119,8 @@ const navItems = [
       </div>
     </footer>
 
-    <script>
+    <script is:inline>
+      // メニュー制御
       const menuBtn = document.getElementById('menu-btn');
       const closeBtn = document.getElementById('close-btn');
       const mobileMenu = document.getElementById('mobile-menu');
@@ -135,13 +135,29 @@ const navItems = [
         document.body.style.overflow = '';
       });
 
-      const mobileLinks = mobileMenu?.querySelectorAll('a');
-      mobileLinks?.forEach(link => {
-        link.addEventListener('click', () => {
-          mobileMenu?.classList.add('hidden');
-          document.body.style.overflow = '';
+      // アクセスログ送信
+      function sendLog(action, details = "") {
+        const data = JSON.stringify({
+          action: action,
+          url: window.location.pathname,
+          details: details
         });
-      });
+
+        // sendBeaconはページ遷移時でも非同期で確実に送信される
+        if (navigator.sendBeacon) {
+          navigator.sendBeacon('/log_collector.php', data);
+        } else {
+          fetch('/log_collector.php', { method: 'POST', body: data, keepalive: true }).catch(() => {});
+        }
+      }
+
+      // ページ読み込みPVを記録
+      sendLog("PAGE_VIEW");
+
+      // グローバルに公開
+      window.trackClick = function(title) {
+        sendLog("CLICK_CONTACT", title);
+      };
     </script>
   </body>
 </html>

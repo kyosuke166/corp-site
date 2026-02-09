@@ -55,28 +55,29 @@ foreach ($msg_numbers as $i) {
     
     $res = exec_cmd($socket, "FETCH $i (INTERNALDATE BODY.PEEK[HEADER.FIELDS (SUBJECT FROM)] BODY.PEEK[TEXT])");
 
-    // --- 【修正ポイント】先に変数を定義する ---
-    // 受信日時
+    // 受信日時・差出人の定義
     preg_match('/INTERNALDATE "([^"]+)"/i', $res, $m_date);
     $received_at = isset($m_date[1]) ? date('m/d H:i', strtotime($m_date[1])) : "";
-
-    // 差出人
     preg_match('/From:.*<([^>]+)>/i', $res, $m_from);
     $from_email = isset($m_from[1]) ? $m_from[1] : "不明";
-    // ---------------------------------------
 
-    // 1. 案件キーワードが含まれているか
-    if (preg_match('/案件|求人/u', $res)) {
-        
-        // 2. 技術者紹介を除外（ここは定義済みの $res を使うのでOK）
-        if (preg_match('/要員のご紹介|技術者紹介|稼働可能|スキルシート|候補者/u', $res)) {
-            continue; 
-        }
+    // --- 【フィルタリングロジック】 ---
+    
+    // 1. 案件・求人キーワードチェック
+    if (!preg_match('/案件|求人/u', $res)) continue;
 
-        // 3. ここで $received_at たちを使う（もう定義済みなのでエラーにならない）
-        $raw_contents .= "--- MAIL ID: $i [Received: $received_at] [From: $from_email] ---\n" . mb_substr($res, 0, 1000) . "\n";
-        $count++;
+    // 2. 技術者紹介・要員情報を除外
+    if (preg_match('/要員のご紹介|技術者紹介|稼働可能|スキルシート|候補者/u', $res)) continue;
+
+    // 3. ★【重要】単価が記載されているかチェック★
+    // 「万」「単価」「円」などの文字が含まれていない場合は「金額不明」としてスキップ
+    if (!preg_match('/([0-9０-９]{2,3})\s*(万|万円|円)/u', $res) && !preg_match('/単価/u', $res)) {
+        continue; 
     }
+
+    // 条件をクリアしたメールだけを解析対象に追加
+    $raw_contents .= "--- MAIL ID: $i [Received: $received_at] [From: $from_email] ---\n" . mb_substr($res, 0, 1000) . "\n";
+    $count++;
 }
 exec_cmd($socket, "LOGOUT");
 fclose($socket);
@@ -87,11 +88,12 @@ $api_url = "https://api.mistral.ai/v1/chat/completions";
 $current_month = date('Y年n月');
 $prompt = "あなたはプロのIT案件キュレーターです。提供されたメール群から案件情報を最大10件抽出し、日本語のJSON形式で出力してください。
 
-【注意】
-・「要員紹介」「エンジニアの紹介」「稼働可能」といった、技術者を売り込む内容のメールは、案件ではありません。これらは無視して絶対に抽出しないでください。
-・仕事の募集（求人）内容のみを扱ってください。
+【厳選ルール：以下の案件は絶対に除外すること】
+・単価の記載がないもの
+・「スキル見合い」「相談」としか書かれていないもの
+・技術者の紹介（要員提案）メール
 
-【厳守ルール】
+【各項目ルール】
 1. 会社名は、発注元・仲介問わずすべて削除、または「大手企業」「DX推進企業」などの一般名詞に変換すること。
 2. 案件タイトル(title)は、メールの件名をそのまま使わず案件内容や概要も見ながら「〜の開発案件」「〜の構築支援」のように簡潔で魅力的な名前にリライトすること。
 3. 要約(summary)は、案件の内容や概要、作業内容や開発環境をわかりやすく4行程度でまとめること。
