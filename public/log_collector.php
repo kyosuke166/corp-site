@@ -1,13 +1,14 @@
 <?php
 date_default_timezone_set('Asia/Tokyo');
-<?php
+
 // --- 自分のIPを除外設定 ---
 $excluded_ips = [
-    '133.200.11.64', // ここにstats.phpの右上に表示されている自分のIPを入れる
-    '127.0.0.1'      // ローカルテスト用
+    '133.203.16.235', 
+    '127.0.0.1'
 ];
+
 if (in_array($_SERVER['REMOTE_ADDR'], $excluded_ips)) {
-    exit; // 自分のIPなら、何もせずここで終了
+    exit; 
 }
 
 /**
@@ -15,24 +16,31 @@ if (in_array($_SERVER['REMOTE_ADDR'], $excluded_ips)) {
  */
 $log_file = __DIR__ . '/access_log.json';
 
-// 管理者Cookieを持っていないアクセスのみを記録
-if (!isset($_COOKIE['is_admin'])) {
-    $json_data = file_get_contents('php://input');
-    $data = json_decode($json_data, true);
+// 送信されてきたJSONを取得
+$json_data = file_get_contents('php://input');
+$data = json_decode($json_data, true);
 
-    if ($data) {
-        $data['time'] = date('Y-m-d H:i:s');
-        $data['ip']   = $_SERVER['REMOTE_ADDR'];
-        $data['ua']   = $_SERVER['HTTP_USER_AGENT'];
+if ($data) {
+    // 管理者Cookieがある場合は、ログに[ADMIN]フラグを立てるだけで保存はするように変更
+    // （完全に除外すると、動作確認ができなくて不便なため）
+    if (isset($_COOKIE['is_admin'])) {
+        $data['admin_access'] = true;
+    }
 
-        // 既存ログの読み込み
-        $current_logs = file_exists($log_file) ? json_decode(file_get_contents($log_file), true) : [];
-        if (!is_array($current_logs)) $current_logs = [];
+    $data['time'] = date('Y-m-d H:i:s');
+    $data['ip']   = $_SERVER['REMOTE_ADDR'];
+    $data['ua']   = $_SERVER['HTTP_USER_AGENT'];
 
-        // 先頭に追加して直近1000件を保持
-        array_unshift($current_logs, $data);
-        $limited_logs = array_slice($current_logs, 0, 1000);
+    // 既存ログの読み込み
+    $current_logs = file_exists($log_file) ? json_decode(file_get_contents($log_file), true) : [];
+    if (!is_array($current_logs)) $current_logs = [];
 
-        file_put_contents($log_file, json_encode($limited_logs, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT));
+    // 先頭に追加して直近1000件を保持
+    array_unshift($current_logs, $data);
+    $limited_logs = array_slice($current_logs, 0, 1000);
+
+    // ファイル保存（失敗した時にエラーを出すように設定）
+    if (file_put_contents($log_file, json_encode($limited_logs, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT)) === false) {
+        error_log("Failed to write log to $log_file");
     }
 }

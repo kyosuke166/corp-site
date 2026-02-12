@@ -79,9 +79,15 @@ import Layout from '../layouts/Layout.astro';
       const container = document.getElementById('project-list-container');
       try {
         const res = await fetch('/projects.json?v=' + Date.now());
-        const projects = await res.json();
+        let projects = await res.json();
 
         if (container && projects.length > 0) {
+          // 🔥 フィッシャー–イェーツのシャッフル（配列をランダムに並び替え）
+          for (let i = projects.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [projects[i], projects[j]] = [projects[j], projects[i]];
+          }
+
           container.innerHTML = projects.map(p => `
             <div class="bg-white border border-slate-300 rounded-lg p-6 md:p-8 shadow-md hover:shadow-2xl hover:-translate-y-1 transition-all duration-300 group">
               <div class="mb-4 text-left flex items-center">
@@ -129,7 +135,6 @@ import Layout from '../layouts/Layout.astro';
               <div class="mt-8 flex justify-end">
                 <a 
                   href="/contact" 
-                  onclick="trackClick('${p.title.replace(/'/g, "\\'")}')" 
                   class="text-sm font-bold text-[#004a99] hover:text-yellow-600 flex items-center gap-1 transition-colors"
                 >
                   この案件を詳しく聞く
