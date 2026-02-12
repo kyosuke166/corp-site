@@ -1,150 +1,158 @@
 <?php
-/**
- * アクセスログ閲覧（管理者用）
- */
-session_start();
+date_default_timezone_set('Asia/Tokyo');
 
-// 合言葉をハッシュ化したもの
-$hashed_password = '$2y$10$R9n3Vz60.L1mC9XG0Zp8a.qP7YkP3H/WfP87I60x2/r0lG9IuE9.G';
-
-// ログアウト処理
-if (isset($_GET['logout'])) {
-    setcookie('is_admin', '', time() - 3600, '/');
-    session_destroy();
-    header("Location: stats.php");
-    exit;
+$user_ip = $_SERVER['REMOTE_ADDR'];
+$log_file = 'access_log.json';
+$logs = [];
+if (file_exists($log_file)) {
+    $logs = json_decode(file_get_contents($log_file), true);
 }
 
-// 認証処理
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-// if (password_verify($_POST['pass'] ?? '', $hashed_password)) {
-// --- （直接文字が合致するかチェック） ---
-if (($_POST['pass'] ?? '') === 'kyosuke166') {
-            $_SESSION['auth'] = true;
-        // 1年間有効な管理者Cookieをセット
-        setcookie('is_admin', 'true', time() + 60 * 60 * 24 * 365, '/');
-    } else {
-        $error = "パスワードが正しくありません。";
+// ページ名設定
+$page_names = [
+    '/' => 'トップページ',
+    '/company/' => '会社情報',
+    '/projects/' => '案件一覧',
+    '/contact/' => 'お問い合わせ',
+    '/contact-thanks/' => '問い合わせ完了',
+    '/recruit/' => '採用情報',
+    '/privacy/' => 'プライバシーポリシー',
+    '/security/' => 'セキュリティ'
+];
+
+$week_jp = ["日", "月", "火", "水", "木", "金", "土"];
+
+// UAを分かりやすく変換する関数
+function parse_ua($ua) {
+    $os = '不明OS';
+    if (strpos($ua, 'iPhone') !== false) $os = 'iPhone';
+    elseif (strpos($ua, 'Android') !== false) $os = 'Android';
+    elseif (strpos($ua, 'Windows') !== false) $os = 'Windows';
+    elseif (strpos($ua, 'Macintosh') !== false) $os = 'Mac';
+
+    $browser = '不明ブラウザ';
+    if (strpos($ua, 'Edg') !== false) $browser = 'Edge';
+    elseif (strpos($ua, 'Chrome') !== false) $browser = 'Chrome';
+    elseif (strpos($ua, 'Safari') !== false) $browser = 'Safari';
+    elseif (strpos($ua, 'Firefox') !== false) $browser = 'Firefox';
+
+    return "[$os / $browser]";
+}
+
+$sessions = [];
+if (!empty($logs)) {
+    foreach ($logs as $log) {
+        $ip = $log['ip'];
+        $time = strtotime($log['time']);
+        $found = false;
+
+        foreach ($sessions as &$session) {
+            if ($session['ip'] === $ip && abs($session['last_time'] - $time) < 1800) {
+                $session['actions'][] = $log;
+                $session['start_time'] = min($session['start_time'], $time);
+                $session['last_time'] = max($session['last_time'], $time);
+                if ($log['url'] === '/contact-thanks/') $session['is_cv'] = true;
+                $found = true;
+                break;
+            }
+        }
+
+        if (!$found) {
+            $sessions[] = [
+                'ip' => $ip,
+                'ua' => $log['ua'],
+                'start_time' => $time,
+                'last_time' => $time,
+                'is_cv' => ($log['url'] === '/contact-thanks/'),
+                'actions' => [$log]
+            ];
+        }
     }
+    usort($sessions, function($a, $b) { return $b['start_time'] <=> $a['start_time']; });
 }
-
-// 認証チェック
-$is_authenticated = $_SESSION['auth'] ?? false;
 ?>
+
 <!DOCTYPE html>
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SBT Access Stats</title>
     <style>
-        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; font-size: 14px; background: #f8fafc; color: #1e293b; margin: 0; padding: 20px; }
-        .container { max-width: 900px; margin: 0 auto; }
-        table { width: 100%; border-collapse: collapse; background: white; border-radius: 8px; overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
-        th, td { border: 1px solid #e2e8f0; padding: 12px; text-align: left; }
-        th { background: #f1f5f9; font-weight: 600; }
-        .click-row { background: #fef9c3; font-weight: bold; color: #854d0e; }
-        .login-box { text-align: center; margin-top: 100px; background: white; padding: 40px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
-        input[type="password"] { padding: 10px; width: 200px; border: 1px solid #cbd5e1; border-radius: 4px; margin-right: 10px; }
-        button { padding: 10px 20px; background: #004a99; color: white; border: none; border-radius: 4px; cursor: pointer; }
-        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
-        .ip-info { font-size: 11px; color: #94a3b8; text-align: right; margin-bottom: 5px; }
-
-        /* 更新ボタンのスタイル */
-        .refresh-btn {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            padding: 8px 16px;
-            background: #ffffff;
-            color: #004a99;
-            border: 1px solid #004a99;
-            border-radius: 20px;
-            font-size: 13px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            text-decoration: none;
-        }
-
-        .refresh-btn:hover {
-            background: #004a99;
-            color: white;
-            box-shadow: 0 4px 12px rgba(0, 74, 153, 0.2);
-            transform: translateY(-1px);
-        }
-
-        .refresh-btn:active {
-            transform: translateY(0);
-        }
-
-        /* くるくる回るアニメーション */
-        .icon-spin {
-            transition: transform 0.6s ease;
-        }
-
-        .refresh-btn:hover .icon-spin {
-            transform: rotate(180deg);
-        }
+        body { font-family: sans-serif; font-size: 14px; background: #f4f7f8; color: #333; margin: 20px; }
+        .header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; flex-wrap: wrap; gap: 10px; }
+        .header-controls { display: flex; align-items: center; gap: 15px; }
+        .my-ip { background: #fff; border: 1px solid #ddd; padding: 5px 10px; border-radius: 4px; font-size: 12px; }
+        .btn-refresh { background: #007bff; color: white; border: none; padding: 8px 15px; border-radius: 4px; cursor: pointer; }
+        table { width: 100%; border-collapse: collapse; background: #fff; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        th, td { border: 1px solid #eee; padding: 12px; text-align: left; vertical-align: top; }
+        th { background: #333; color: #fff; }
+        tr:nth-child(even) { background: #f9f9f9; }
+        .cv-row { background-color: #e8f5e9 !important; border-left: 5px solid #4caf50; }
+        .cv-badge { background: #4caf50; color: white; padding: 2px 6px; border-radius: 3px; font-size: 10px; font-weight: bold; margin-bottom: 5px; display: inline-block; }
+        .time-cell { white-space: nowrap; width: 120px; }
+        .ip-cell { white-space: nowrap; width: 160px; font-family: monospace; }
+        .stay-time { color: #888; font-size: 11px; margin-top: 4px; }
+        .ua-info { font-size: 11px; color: #666; font-weight: bold; margin-bottom: 4px; display: block; }
+        .ua-full { font-size: 9px; color: #ccc; display: block; margin-top: 5px; }
+        .path { line-height: 1.8; }
     </style>
 </head>
 <body>
-<div class="container">
 
-    <?php if (!$is_authenticated): ?>
-        <div class="login-box">
-            <h3>SBT Admin Login</h3>
-            <form method="POST">
-                <input type="password" name="pass" placeholder="Password" autofocus>
-                <button type="submit">認証</button>
-            </form>
-            <?php if (isset($error)): ?><p style="color:red;"><?= $error ?></p><?php endif; ?>
-        </div>
-    <?php else: ?>
-        <div class="ip-info">Your IP: <?= $_SERVER['REMOTE_ADDR'] ?> (Logged in)</div>
-        <div class="header">
-            <div style="display: flex; align-items: center; gap: 15px;">
-                <h2 style="margin: 0;">🚀 アクセスログ</h2>
-                <a href="stats.php" class="refresh-btn">
-                    <span class="icon-spin">🔄</span> 最新の状態に更新
-                </a>
-            </div>
-            <a href="?logout=1" style="color:#ef4444; text-decoration:none; font-weight:bold;">ログアウト</a>
-        </div>
-
-        <table>
-            <thead>
-                <tr>
-                    <th style="width: 100px;">時刻</th>
-                    <th style="width: 80px;">種別</th>
-                    <th>内容 / URL</th>
-                </tr>
-            </thead>
-            <tbody>
-                <?php
-                $logs = [];
-                if (file_exists('access_log.json')) {
-                    $logs = json_decode(file_get_contents('access_log.json'), true) ?: [];
-                }
-                foreach ($logs as $l):
-                    $is_click = ($l['action'] === 'CLICK_CONTACT');
-                ?>
-                <tr class="<?= $is_click ? 'click-row' : '' ?>">
-                    <td><?= htmlspecialchars(substr($l['time'], 5, 11)) ?></td>
-                    <td><?= $is_click ? '🔥 CLICK' : '👁 PV' ?></td>
-                    <td>
-                        <?= htmlspecialchars($l['details'] ?: $l['url']) ?>
-                        <div style="font-size: 10px; color: #94a3b8; margin-top: 4px;">IP: <?= htmlspecialchars($l['ip']) ?></div>
-                    </td>
-                </tr>
-                <?php endforeach; ?>
-                <?php if (empty($logs)): ?>
-                    <tr><td colspan="3" style="text-align:center;">ログがありません</td></tr>
-                <?php endif; ?>
-            </tbody>
-        </table>
-    <?php endif; ?>
-
+<div class="header">
+    <h2>🚀 SBT アクセス解析</h2>
+    <div class="header-controls">
+        <div class="my-ip">あなたのIP: <strong><?php echo $user_ip; ?></strong></div>
+        <button onclick="location.reload()" class="btn-refresh">更新</button>
+    </div>
 </div>
+
+<table>
+    <thead>
+        <tr>
+            <th>日時</th>
+            <th>接続元</th>
+            <th>アクセスログ (導線)</th>
+        </tr>
+    </thead>
+    <tbody>
+        <?php foreach ($sessions as $session): ?>
+            <?php 
+                $dt = $session['start_time'];
+                $w = $week_jp[date('w', $dt)];
+                $display_time = date('m/d', $dt) . "({$w}) " . date('H:i', $dt);
+                $diff = $session['last_time'] - $session['start_time'];
+                $stay_label = ($diff > 0) ? "(" . floor($diff/60) . "分" . ($diff%60) . "秒)" : "(離脱)";
+            ?>
+            <tr class="<?php echo $session['is_cv'] ? 'cv-row' : ''; ?>">
+                <td class="time-cell"><?php echo $display_time; ?></td>
+                <td class="ip-cell">
+                    <?php if($session['is_cv']): ?><span class="cv-badge">CV達成</span><br><?php endif; ?>
+                    <span class="ua-info"><?php echo parse_ua($session['ua']); ?></span>
+                    <?php echo $session['ip']; ?>
+                    <?php if($session['ip'] === $user_ip) echo " <span style='color:red;'>(自分)</span>"; ?>
+                    <div class="stay-time"><?php echo $stay_label; ?></div>
+                </td>
+                <td class="path">
+                    <?php 
+                    $path_strings = [];
+                    foreach ($session['actions'] as $action) {
+                        $p = $action['url'];
+                        $name = isset($page_names[$p]) ? $page_names[$p] : $p;
+                        $icon = ($action['action'] === 'CLICK_CONTACT') ? '👉' : '📄';
+                        $style = ($p === '/contact-thanks/') ? 'font-weight:bold; color:#2e7d32;' : '';
+                        $detail = !empty($action['details']) ? " <span style='color:#007bff; font-size:11px;'>[{$action['details']}]</span>" : "";
+                        $path_strings[] = "<span style='{$style}'>{$icon}{$name}{$detail}</span>";
+                    }
+                    echo implode(' → ', $path_strings);
+                    ?>
+                    <span class="ua-full">UA: <?php echo htmlspecialchars($session['ua']); ?></span>
+                </td>
+            </tr>
+        <?php endforeach; ?>
+    </tbody>
+</table>
+
 </body>
 </html>

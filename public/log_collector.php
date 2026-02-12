@@ -1,4 +1,15 @@
 <?php
+date_default_timezone_set('Asia/Tokyo');
+<?php
+// --- 自分のIPを除外設定 ---
+$excluded_ips = [
+    '133.200.11.64', // ここにstats.phpの右上に表示されている自分のIPを入れる
+    '127.0.0.1'      // ローカルテスト用
+];
+if (in_array($_SERVER['REMOTE_ADDR'], $excluded_ips)) {
+    exit; // 自分のIPなら、何もせずここで終了
+}
+
 /**
  * ログ収集プログラム
  */
