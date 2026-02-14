@@ -40,3 +40,4 @@ jobs:
           source: "dist/*"
           target: "www/www/"
           strip_components: 1 # distフォルダ自体ではなく中身だけを送る設定
+
