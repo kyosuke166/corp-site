@@ -38,5 +38,5 @@ jobs:
           password: ${{ secrets.FTP_PASSWORD }}
           port: 22
           source: "dist/*"
-          target: "www/"
+          target: "www/www/"
           strip_components: 1 # distフォルダ自体ではなく中身だけを送る設定
