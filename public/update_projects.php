@@ -4,9 +4,13 @@
  * さくらサーバのメールを取得し、Mistral AIで案件解析してJSON保存する
  */
 
-// --- 1. 設定 ---
-define('ACCESS_TOKEN', 'kyosuke166'); 
-define('MISTRAL_API_KEY', 'epfhcKKzVRhqN9WliWMpSpPNFQdWdMmY'); 
+// --- 1. 設定の読み込み ---
+require_once __DIR__ . '/db-config.php'; // 階層に合わせて調整してください
+
+// セキュリティチェック用のトークン（db-config.phpに定義がない場合はここで定義）
+if (!defined('ACCESS_TOKEN')) {
+    define('ACCESS_TOKEN', 'kyosuke166'); 
+}
 
 // セキュリティチェック
 $is_cron = (php_sapi_name() == 'cli');
@@ -20,10 +24,11 @@ ini_set('display_errors', 1);
 error_reporting(E_ALL);
 mb_internal_encoding("UTF-8");
 
-$host = 'ssl://sbt-inc.sakura.ne.jp';
+// db-config.php の定数を使用
+$host = 'ssl://' . IMAP_HOST;
 $port = 993;
-$user = 'sales@sbt-inc.co.jp'; 
-$pass = 'Flowersf0rAlgernon'; 
+$user = IMAP_USER; 
+$pass = IMAP_PASS; 
 $save_path = __DIR__ . '/projects.json';
 
 // --- 2. IMAPメール取得処理 ---
@@ -50,7 +55,6 @@ rsort($msg_numbers);
 
 $raw_contents = "";
 $count = 0;
-// 【変更】母数を増やすため、解析対象の上限を50件にアップ
 $target_limit = 50; 
 
 foreach ($msg_numbers as $i) {
@@ -58,33 +62,22 @@ foreach ($msg_numbers as $i) {
     
     $res = exec_cmd($socket, "FETCH $i (INTERNALDATE BODY.PEEK[HEADER.FIELDS (SUBJECT FROM)] BODY.PEEK[TEXT])");
 
-    // 受信日時・差出人の定義
     preg_match('/INTERNALDATE "([^"]+)"/i', $res, $m_date);
     $received_at = isset($m_date[1]) ? date('m/d H:i', strtotime($m_date[1])) : "";
     preg_match('/From:.*<([^>]+)>/i', $res, $m_from);
     $from_email = isset($m_from[1]) ? $m_from[1] : "不明";
 
-    // --- 【フィルタリングロジック：AIに渡す前にノイズをカット】 ---
-    
-    // 1. 案件・求人キーワードチェック
+    // --- フィルタリングロジック ---
     if (!preg_match('/案件|求人/u', $res)) continue;
-
-    // 2. 技術者紹介・要員情報を除外
     if (preg_match('/要員のご紹介|技術者紹介|稼働可能|スキルシート|候補者/u', $res)) continue;
-
-    // 3. 単価チェック（より厳格に）
-    // 「スキル見合いのみ」や「金額未定」のメールをAIに渡さないようにする
     if (preg_match('/単価[:：]\s*(スキル見合い|相談|確認中)/u', $res)) continue;
     if (!preg_match('/([0-9０-９]{2,3})\s*(万|万円|円)/u', $res) && !preg_match('/単価/u', $res)) {
         continue; 
     }
-
-    // 4. 場所・リモート情報がないメールを除外
     if (!preg_match('/駅|区|都内|リモート|在宅|テレワーク|出社/u', $res)) {
         continue;
     }
     
-    // 条件をクリアしたメールだけを解析対象に追加
     $raw_contents .= "--- MAIL ID: $i [Received: $received_at] [From: $from_email] ---\n" . mb_substr($res, 0, 1000) . "\n";
     $count++;
 }
@@ -97,28 +90,17 @@ $api_url = "https://api.mistral.ai/v1/chat/completions";
 $current_month = date('Y年n月');
 $prompt = "あなたはプロのIT案件キュレーターです。提供されたメール群から、情報が充実している案件を厳選して日本語のJSON形式で出力してください。
 
-【最優先：以下の案件は不採用とし、JSONに含めないこと】
-・具体的な金額（〜〇〇万）が特定できないもの
-・金額が「スキル見合い」「相談」としか書かれていないもの
-・具体的な作業場所（駅名など）やリモート可否が特定できないもの
-・「プロジェクトによる」「場所不明」となるもの
-
 【各項目ルール】
 1. 会社名は、すべて「大手企業」「DX推進企業」などの一般名詞に変換すること。
-2. 案件タイトル(title)は、内容を元に「〜の開発案件」のように魅力的にリライトすること。
+2. 案件タイトル(title)は魅力的にリライトすること。
 3. 要約(summary)は、作業内容や環境を4行程度でまとめること。
-4. 期間(period)は、「〇月～」の形式。開始日が現在（{$current_month}）以前なら「即日～」とする。
+4. 期間(period)は、「2026年4月～」のような西暦を含む形式で抽出してください。
 5. 場所(location)は「駅名」または「リモート可否」を抽出。
-   - 【絶対ルール】場所が「プロジェクトによる」「不明」となる案件は出力しないでください。
-   - 駅名は「渋谷」のように「駅」を抜いて出力。
-6. 金額（price）の抽出：
-   - 【絶対ルール】金額が不明な案件、または「スキル見合い」となる案件は出力しないでください。
-   - 数字の前に必ず「～」を、末尾に「万」を付与（例：～80万）。
+6. 金額（price）の抽出：数字の前に必ず「～」を、末尾に「万」を付与。
 7. スキル(skills)は、技術スタックを最大6つの配列。
 8. tagは「新着」または「高還元」。
 9. 受信日時を 'received_at' に、メール送信元を 'sender_email' に格納。
 10.出力は必ず以下のJSON構造のみとすること。
-
 [{\"tag\":\"新着\",\"received_at\":\"MM/DD HH:i\",\"sender_email\":\"\",\"title\":\"\",\"period\":\"\",\"location\":\"\",\"price\":\"\",\"summary\":\"\",\"skills\":[]}]";
 
 $data = [
@@ -128,14 +110,14 @@ $data = [
         ["role" => "user", "content" => $prompt . "\n\n" . $raw_contents]
     ],
     "response_format" => ["type" => "json_object"],
-    "temperature" => 0.1 // 決定論的な出力を高めるために温度を下げる
+    "temperature" => 0.1
 ];
 
 $ch = curl_init($api_url);
 curl_setopt($ch, CURLOPT_HTTPHEADER, [
     'Content-Type: application/json',
     'Accept: application/json',
-    'Authorization: Bearer ' . MISTRAL_API_KEY
+    'Authorization: Bearer ' . MISTRAL_API_KEY // db-config.phpの定数を使用
 ]);
 curl_setopt($ch, CURLOPT_POST, true);
 curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
@@ -146,25 +128,34 @@ $response = curl_exec($ch);
 $res_decode = json_decode($response, true);
 curl_close($ch);
 
-// --- 4. 結果の保存とリダイレクト ---
+// --- 4. 結果の整形・保存 ---
 if (isset($res_decode['choices'][0]['message']['content'])) {
     $json_raw = $res_decode['choices'][0]['message']['content'];
-    
     $data_check = json_decode($json_raw, true);
     $final_data = isset($data_check['projects']) ? $data_check['projects'] : $data_check;
     
-    // 【念押し】保存直前に「スキル見合い」や「プロジェクトによる」が含まれる要素を除去
+    foreach ($final_data as &$item) {
+        // --- 期間(period)の整形：西暦削除 & 頭の0を削除 ---
+        if (!empty($item['period'])) {
+            // 「2026年」や「2026/」を削除
+            $term = preg_replace('/^20\d{2}[年\/]/u', '', $item['period']);
+            // 「04月」などの先頭の0を削除
+            $item['period'] = preg_replace('/^0+(\d)/', '$1', $term);
+        }
+    }
+    unset($item);
+
+    // キーワードによる最終フィルタリング
     $filtered_data = array_filter($final_data, function($item) {
         $invalid_keywords = ['スキル見合い', 'プロジェクトによる', '不明', '相談'];
         foreach ($invalid_keywords as $word) {
-            if (strpos($item['price'], $word) !== false || strpos($item['location'], $word) !== false) {
+            if (strpos($item['price'] ?? '', $word) !== false || strpos($item['location'] ?? '', $word) !== false) {
                 return false;
             }
         }
         return true;
     });
 
-    // 配列の添字を振り直す
     $filtered_data = array_values($filtered_data);
 
     if (file_exists($save_path)) { chmod($save_path, 0666); }
