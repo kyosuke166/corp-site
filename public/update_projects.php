@@ -5,7 +5,7 @@
  */
 
 // --- 1. 設定の読み込み ---
-require_once __DIR__ . '/db-config.php'; // 階層に合わせて調整してください
+require_once __DIR__ . '/../../db-config.php';
 
 // セキュリティチェック用のトークン（db-config.phpに定義がない場合はここで定義）
 if (!defined('ACCESS_TOKEN')) {
@@ -29,7 +29,7 @@ $host = 'ssl://' . IMAP_HOST;
 $port = 993;
 $user = IMAP_USER; 
 $pass = IMAP_PASS; 
-$save_path = __DIR__ . '/projects.json';
+$save_path = __DIR__ . '/../projects.json';
 
 // --- 2. IMAPメール取得処理 ---
 $socket = fsockopen($host, $port, $errno, $errstr, 30);
@@ -85,7 +85,7 @@ exec_cmd($socket, "LOGOUT");
 fclose($socket);
 
 // --- 3. Mistral AI 連携 ---
-$api_url = "https://api.mistral.ai/v1/chat/completions";
+$api_url = MISTRAL_API_URL;
 
 $current_month = date('Y年n月');
 $prompt = "あなたはプロのIT案件キュレーターです。提供されたメール群から、情報が充実している案件を厳選して日本語のJSON形式で出力してください。

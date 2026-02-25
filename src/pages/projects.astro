@@ -8,7 +8,7 @@ import Layout from '../layouts/Layout.astro';
       <div class="max-w-5xl mx-auto text-center md:text-left">
         <h1 class="text-sm font-bold text-yellow-500 tracking-[0.3em] uppercase mb-4">Available Projects</h1>
         <h2 class="text-3xl md:text-5xl font-bold text-white leading-tight">
-          <span id="admin-trigger" class="cursor-default select-none">最新</span>案件一覧
+          最新案件一覧
         </h2>
         <p class="text-slate-400 mt-6 max-w-2xl leading-relaxed mx-auto md:mx-0">
           SBTが保有する案件の一部を公開しています。商流の浅い直案件・エンド案件を中心に、エンジニアの正当な評価を約束するプロジェクトのみを厳選しています。
@@ -57,24 +57,7 @@ import Layout from '../layouts/Layout.astro';
   </main>
 
   <script is:inline>
-    // --- 1. 案件更新処理 ---
-    let count = 0;
-    const t = document.getElementById('admin-trigger');
-    const SECRET_TOKEN = 'kyosuke166';
-
-    t?.addEventListener('click', () => {
-      count++;
-      if (count === 5) {
-        const userInput = prompt('管理者トークンを入力してください:');
-        if (userInput === SECRET_TOKEN) {
-          window.location.href = `/update_projects.php?token=${encodeURIComponent(userInput)}`;
-        }
-        count = 0;
-      }
-      setTimeout(() => { count = 0; }, 3000);
-    });
-
-    // --- 2. 最新案件の読み込みと描画処理 ---
+    // --- 最新案件の読み込みと描画処理 ---
     async function loadProjects() {
       const container = document.getElementById('project-list-container');
       try {
@@ -82,24 +65,39 @@ import Layout from '../layouts/Layout.astro';
         let projects = await res.json();
 
         if (container && projects.length > 0) {
-          // 🔥 フィッシャー–イェーツのシャッフル
-          for (let i = projects.length - 1; i > 0; i--) {
-            const j = Math.floor(Math.random() * (i + 1));
-            [projects[i], projects[j]] = [projects[j], projects[i]];
+          
+          // 1. 必要な項目がnullでないものを抽出
+          const filtered = projects.filter(p => 
+            p.reward !== null && 
+            p.location !== null && 
+            p.skills !== null && 
+            p.summary_text !== null
+          );
+
+          // 2. created の新しい順に並び替え
+          filtered.sort((a, b) => new Date(b.created) - new Date(a.created));
+
+          // 3. 最大10件をピックアップ
+          const topTen = filtered.slice(0, 10);
+
+          if (topTen.length === 0) {
+            container.innerHTML = '<p class="text-center text-slate-500">現在、公開可能な案件はございません。</p>';
+            return;
           }
 
-          container.innerHTML = projects.map(p => {
-            // ✅ 作業期間の頭ゼロを削除 (例: 04月 -> 4月)
-            const formattedPeriod = p.period ? p.period.replace(/^0/, '') : '';
+          container.innerHTML = topTen.map(p => {
+            const skillArray = p.skills ? p.skills.split(',').filter(s => s.trim() !== "") : [];
+            const displayPrice = `～${p.reward}万`;
+            const dateStr = p.created ? p.created.split(' ')[0].split('-').slice(1).join('/') : '';
 
             return `
             <div class="bg-white border border-slate-300 rounded-lg p-6 md:p-8 shadow-md hover:shadow-2xl hover:-translate-y-1 transition-all duration-300 group">
               <div class="mb-4 text-left flex items-center">
                 <span class="inline-block bg-[#004a99] text-white text-[10px] font-bold px-3 py-1 rounded">
-                  ${p.tag}
+                  NEW
                 </span>
                 <span class="ml-2 text-[10px] text-slate-400 font-medium">
-                  (${p.received_at || ''})
+                  (${dateStr})
                 </span>
               </div>
               <h3 class="text-xl md:text-2xl font-bold text-[#004a99] mb-6 leading-snug group-hover:text-yellow-600 transition-colors duration-300">
@@ -108,30 +106,30 @@ import Layout from '../layouts/Layout.astro';
 
               <div class="grid grid-cols-1 md:grid-cols-3 gap-0 border border-slate-200 rounded-md overflow-hidden mb-6">
                 <div class="bg-slate-50 p-4 border-b md:border-b-0 md:border-r border-slate-200">
-                  <p class="text-[10px] font-bold text-slate-400 mb-1 tracking-wider uppercase">作業期間</p>
-                  <p class="text-[13px] font-bold text-slate-700">${formattedPeriod}</p>
+                  <p class="text-[10px] font-bold text-slate-400 mb-1 tracking-wider uppercase">勤務形態</p>
+                  <p class="text-[13px] font-bold text-slate-700">${p.remote || '確認中'}</p>
                 </div>
                 <div class="bg-slate-50 p-4 border-b md:border-b-0 md:border-r border-slate-200">
-                  <p class="text-[10px] font-bold text-slate-400 mb-1 tracking-wider uppercase">作業場所</p>
+                  <p class="text-[10px] font-bold text-slate-400 mb-1 tracking-wider uppercase">場所</p>
                   <p class="text-[13px] font-bold text-slate-700 leading-snug">${p.location}</p>
                 </div>
                 <div class="bg-slate-50 p-4">
-                  <p class="text-[10px] font-bold text-slate-400 mb-1 tracking-wider uppercase">単価</p>
-                  <p class="text-lg font-black text-[#d00000] tracking-tight">${p.price}</p>
+                  <p class="text-[10px] font-bold text-slate-400 mb-1 tracking-wider uppercase">想定単価</p>
+                  <p class="text-lg font-black text-[#d00000] tracking-tight">${displayPrice}</p>
                 </div>
               </div>
 
               <div class="mb-8">
-                <p class="text-[10px] font-black text-slate-400 mb-2 tracking-tighter italic">≪ 概要 ≫</p>
+                <p class="text-[10px] font-black text-slate-400 mb-2 tracking-tighter italic">≪ 案件概要 ≫</p>
                 <p class="text-[14px] text-slate-600 leading-relaxed pl-1">
-                  ${p.summary}
+                  ${p.summary_text}
                 </p>
               </div>
 
               <div class="flex flex-wrap gap-2 pt-4 border-t border-slate-100">
-                ${p.skills.map(skill => `
+                ${skillArray.map(skill => `
                   <span class="bg-[#eef4ff] text-[#004a99] border border-[#cce0ff] px-3 py-1 rounded-full text-[11px] font-bold">
-                    ${skill}
+                    ${skill.trim()}
                   </span>
                 `).join('')}
               </div>
@@ -148,9 +146,10 @@ import Layout from '../layouts/Layout.astro';
                 </a>
               </div>
             </div>
-          `}).join('');
+            `}).join('');
         }
       } catch (e) {
+        console.error(e);
         if (container) container.innerHTML = '<p class="text-center text-slate-500">案件情報の取得に失敗しました。</p>';
       }
     }
