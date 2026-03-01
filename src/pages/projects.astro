@@ -64,18 +64,21 @@ import Layout from '../layouts/Layout.astro';
         const res = await fetch('/projects.json?v=' + Date.now());
         let projects = await res.json();
 
-        if (container && projects.length > 0) {
+        if (container && Array.isArray(projects)) {
           
-          // 1. 必要な項目がnullでないものを抽出
-          const filtered = projects.filter(p => 
-            p.reward !== null && 
-            p.location !== null && 
-            p.skills !== null && 
-            p.summary_text !== null
-          );
+          // 1. 案件概要・スキル・作業場所の３つに値が入ってるものを表示対象とする
+          const filtered = projects.filter(p => {
+            return p.summary_text && p.summary_text.trim() !== "" &&
+                   p.skills && p.skills.trim() !== "" &&
+                   p.location && p.location.trim() !== "";
+          });
 
-          // 2. created の新しい順に並び替え
-          filtered.sort((a, b) => new Date(b.created) - new Date(a.created));
+          // 2. 日付の新しい順にソート（ブラウザ互換性のために - を / に置換）
+          filtered.sort((a, b) => {
+            const dateA = new Date(a.created.replace(/-/g, '/'));
+            const dateB = new Date(b.created.replace(/-/g, '/'));
+            return dateB - dateA;
+          });
 
           // 3. 最大10件をピックアップ
           const topTen = filtered.slice(0, 10);
@@ -86,8 +89,17 @@ import Layout from '../layouts/Layout.astro';
           }
 
           container.innerHTML = topTen.map(p => {
+            // スキルの配列化
             const skillArray = p.skills ? p.skills.split(',').filter(s => s.trim() !== "") : [];
-            const displayPrice = `～${p.reward}万`;
+            
+            // ルール：単価がnullまたは0の場合は「スキル見合い」
+            const isRewardEmpty = !p.reward || p.reward === "0" || p.reward === 0;
+            const displayPrice = isRewardEmpty ? 'スキル見合い' : `～${p.reward}万`;
+            
+            // ルール：リモートがnull（または空）の場合は「出社」
+            const displayRemote = (p.remote && p.remote.trim() !== "") ? p.remote : '出社';
+
+            // 日付表示用（MM/DD）
             const dateStr = p.created ? p.created.split(' ')[0].split('-').slice(1).join('/') : '';
 
             return `
@@ -107,7 +119,7 @@ import Layout from '../layouts/Layout.astro';
               <div class="grid grid-cols-1 md:grid-cols-3 gap-0 border border-slate-200 rounded-md overflow-hidden mb-6">
                 <div class="bg-slate-50 p-4 border-b md:border-b-0 md:border-r border-slate-200">
                   <p class="text-[10px] font-bold text-slate-400 mb-1 tracking-wider uppercase">勤務形態</p>
-                  <p class="text-[13px] font-bold text-slate-700">${p.remote || '確認中'}</p>
+                  <p class="text-[13px] font-bold text-slate-700">${displayRemote}</p>
                 </div>
                 <div class="bg-slate-50 p-4 border-b md:border-b-0 md:border-r border-slate-200">
                   <p class="text-[10px] font-bold text-slate-400 mb-1 tracking-wider uppercase">場所</p>
@@ -146,10 +158,11 @@ import Layout from '../layouts/Layout.astro';
                 </a>
               </div>
             </div>
-            `}).join('');
+            `;
+          }).join('');
         }
       } catch (e) {
-        console.error(e);
+        console.error("Fetch or Render Error:", e);
         if (container) container.innerHTML = '<p class="text-center text-slate-500">案件情報の取得に失敗しました。</p>';
       }
     }
