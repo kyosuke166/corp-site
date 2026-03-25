@@ -89,6 +89,15 @@ import Layout from '../layouts/Layout.astro';
           }
 
           container.innerHTML = topTen.map(p => {
+            // 本日の日付を取得 (m/d形式)
+            const today = new Date();
+            const month = today.getMonth() + 1;
+            const day = today.getDate();
+            const todayStr = `${month}月${day}日`;
+
+            // 案件No.（mail_id）の取得
+            const projectNo = p.mail_id ? `案件No.${p.mail_id}` : '';
+
             // スキルの配列化
             const skillArray = p.skills ? p.skills.split(',').filter(s => s.trim() !== "") : [];
             
@@ -108,8 +117,8 @@ import Layout from '../layouts/Layout.astro';
                 <span class="inline-block bg-[#004a99] text-white text-[10px] font-bold px-3 py-1 rounded">
                   NEW
                 </span>
-                <span class="ml-2 text-[10px] text-slate-400 font-medium">
-                  (${dateStr})
+                <span class="ml-2 text-[10px] text-slate-400 font-bold">
+                  ${projectNo} (${todayStr})
                 </span>
               </div>
               <h3 class="text-xl md:text-2xl font-bold text-[#004a99] mb-6 leading-snug group-hover:text-yellow-600 transition-colors duration-300">
